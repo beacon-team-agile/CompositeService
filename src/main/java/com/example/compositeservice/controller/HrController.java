@@ -15,7 +15,7 @@ public class HrController {
     public String registerRequest(@RequestHeader(value = "Authorization", required = false) Optional<String> token,
                                   HttpServletResponse response) throws ParseException, IOException {
         if (!token.isPresent()) {
-            System.out.println("No header provided");
+            return "No header provided";
         }
 
         return "Active visas";
