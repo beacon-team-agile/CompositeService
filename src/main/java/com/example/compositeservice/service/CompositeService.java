@@ -10,7 +10,6 @@ import com.example.compositeservice.domain.response.common.ResponseStatus;
 import com.example.compositeservice.entity.EmployeeService.Employee;
 import com.example.compositeservice.service.remote.RemoteApplicationService;
 import com.example.compositeservice.service.remote.RemoteEmployeeService;
-import com.example.compositeservice.service.remote.RemoteHousingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +26,6 @@ public class CompositeService {
     private RemoteApplicationService applicationService;
     private RestTemplate restTemplate;
 
-    private RemoteHousingService housingService;
     @Autowired
     public void setRestTemplate(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -36,11 +34,6 @@ public class CompositeService {
     @Autowired
     public void setEmployeeService(RemoteEmployeeService employeeService) {
         this.employeeService = employeeService;
-    }
-
-    @Autowired
-    public void setHousingService(RemoteHousingService housingService) {
-        this.housingService = housingService;
     }
 
     @Autowired
