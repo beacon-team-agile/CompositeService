@@ -1,9 +1,13 @@
 package com.example.compositeservice.controller;
 
 import com.example.compositeservice.domain.request.EmplyeeForm.OnBoardFormatRequest;
+import com.example.compositeservice.domain.response.EmployeeResponse.FilePathResponse;
 import com.example.compositeservice.entity.EmployeeService.Employee;
+import com.example.compositeservice.service.CompositeFileService;
 import com.example.compositeservice.service.CompositeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/employee")
@@ -18,10 +23,16 @@ import java.text.ParseException;
 public class EmployeeController {
 
     private CompositeService compositeService;
+    private CompositeFileService compositeFileService;
 
     @Autowired
     public void setCompositeService(CompositeService compositeService) {
         this.compositeService = compositeService;
+    }
+    
+    @Autowired
+    public void setCompositeFileService(CompositeFileService compositeFileService) {
+        this.compositeFileService = compositeFileService;
     }
 
     @GetMapping("/onboard")
@@ -59,7 +70,6 @@ public class EmployeeController {
         .build();
 
         this.compositeService.addEmployeeForm(newEmployee, multiFile);
-
         return "On board page";
     }
 
@@ -68,6 +78,16 @@ public class EmployeeController {
         //Identify by header
 
         return "Welcome to homepage";
+    }
+    
+    @GetMapping("download/{filename}")
+    public ResponseEntity<ByteArrayResource> retrieveFile(@PathVariable String filename) {
+        return compositeFileService.downloadDocument(filename);
+    }
+    
+    @GetMapping("getAllDocuments/{empId}")
+    public List<FilePathResponse> retrieveAllDocuments(@PathVariable String empId) {
+        return compositeService.getFilePathList(empId);
     }
 
 
