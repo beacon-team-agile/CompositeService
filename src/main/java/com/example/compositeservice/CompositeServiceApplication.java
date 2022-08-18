@@ -13,5 +13,4 @@ public class CompositeServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(CompositeServiceApplication.class, args);
     }
-
 }
