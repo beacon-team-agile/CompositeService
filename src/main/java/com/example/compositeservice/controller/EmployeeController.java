@@ -82,6 +82,11 @@ public class EmployeeController {
                                   @RequestPart MultipartFile[] multiFile) {
         return this.compositeService.addEmployeeForms(employeeId, multiFile);
     }
+    
+    @GetMapping("/view_onboard_form")
+    public SingleEmployeeResponse view_OnboardForm(@RequestPart String employeeId) {
+    	return this.compositeService.getEmployeeById(employeeId);
+    }
 
 
     @GetMapping("/main_menu")
