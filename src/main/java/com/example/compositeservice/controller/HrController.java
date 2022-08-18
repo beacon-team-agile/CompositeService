@@ -1,6 +1,8 @@
 package com.example.compositeservice.controller;
 
-import com.example.compositeservice.domain.response.EmployeeResponse.EmployeeDetailResponse;
+import com.example.compositeservice.domain.response.EmployeeResponse.AllEmployeesBriefInfoResponse;
+import com.example.compositeservice.domain.response.EmployeeResponse.EmployeeBriefInfoResponse;
+import com.example.compositeservice.domain.response.EmployeeResponse.SingleEmployeeResponse;
 import com.example.compositeservice.service.CompositeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -9,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/hr")
@@ -28,8 +29,14 @@ public class HrController {
         return "Active visas";
     }
 
+    @GetMapping("employee/all_brief_info")
+    public AllEmployeesBriefInfoResponse getAllEmployeeBriefInfo() {
+        return compositeService.getAllEmployeeBriefInfo();
+    }
+
+
     @GetMapping("employee/{id}")
-    public EmployeeDetailResponse getEmployeeDetailById(@PathVariable String id) {
+    public SingleEmployeeResponse getEmployeeDetailById(@PathVariable String id) {
         return compositeService.getEmployeeById(id);
     }
 }
