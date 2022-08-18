@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface RemoteEmployeeService {
 
     @GetMapping("employee-service/employee/{id}")
-    SingleEmployeeResponse GetEmployeeById(@PathVariable String id);
+    SingleEmployeeResponse getEmployeeById(@PathVariable String id);
 
     @GetMapping("employee-service/employee/all")
-    EmployeesResponse GetAllEmployee();
+    EmployeesResponse getAllEmployee();
 
 
 
