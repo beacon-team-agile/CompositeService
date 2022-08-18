@@ -24,7 +24,6 @@ public class CompositeService {
         this.employeeService = employeeService;
     }
 
-//    TODO: 2022/8/17  
 //    public EmployeeDetailResponse getEmployeeById(String id){
 //        SingleEmployeeResponse employee = employeeService.GetEmployeeById(id);
 //        if ()
