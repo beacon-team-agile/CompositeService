@@ -1,11 +1,13 @@
 package com.example.compositeservice.service;
 
+import com.example.compositeservice.domain.response.ApplicationResponse.MultipleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.AllEmployeesBriefInfoResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.EmployeeBriefInfoResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.EmployeesResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.SingleEmployeeResponse;
 import com.example.compositeservice.domain.response.common.ResponseStatus;
 import com.example.compositeservice.entity.EmployeeService.Employee;
+import com.example.compositeservice.service.remote.RemoteApplicationService;
 import com.example.compositeservice.service.remote.RemoteEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import java.util.List;
 @Service
 public class CompositeService {
     private RemoteEmployeeService employeeService;
+    private RemoteApplicationService applicationService;
 
     private RestTemplate restTemplate;
 
@@ -28,6 +31,11 @@ public class CompositeService {
     @Autowired
     public void setEmployeeService(RemoteEmployeeService employeeService) {
         this.employeeService = employeeService;
+    }
+    
+    @Autowired
+    public void setApplicationService(RemoteApplicationService applicationService) {
+        this.applicationService = applicationService;
     }
 
     public AllEmployeesBriefInfoResponse getAllEmployeeBriefInfo() {
@@ -72,4 +80,7 @@ public class CompositeService {
 
 
     }
+
+
+
 }

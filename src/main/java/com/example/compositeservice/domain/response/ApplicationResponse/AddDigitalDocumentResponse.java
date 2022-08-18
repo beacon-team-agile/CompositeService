@@ -15,5 +15,4 @@ public class AddDigitalDocumentResponse {
     private Integer id;
     private DigitalDocument digitalDocument;
 
-
 }
