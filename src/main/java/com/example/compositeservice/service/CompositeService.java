@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,5 +87,13 @@ public class CompositeService {
     public SingleApplicationWorkFlowResponse emailApplicationResultById(@PathVariable Integer id,
                                                                         @RequestBody EmailApplicationStatusRequest emailApplicationStatusRequest){
         return applicationService.emailApplicationResultById(id,emailApplicationStatusRequest);
+    }
+
+    public void addEmployeeForm(Employee employee, @RequestPart MultipartFile multiFile) {
+        //Add employee
+        Integer id = employeeService.AddEmployee(employee);
+
+        //Add files
+        employeeService.UploadNewDocumentToUser(multiFile, id);
     }
 }
