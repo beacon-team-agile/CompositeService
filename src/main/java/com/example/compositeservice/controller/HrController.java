@@ -1,7 +1,6 @@
 package com.example.compositeservice.controller;
 
 import com.example.compositeservice.domain.response.EmployeeResponse.EmployeeDetailResponse;
-import com.example.compositeservice.domain.response.EmployeeResponse.SingleEmployeeResponse;
 import com.example.compositeservice.service.CompositeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;

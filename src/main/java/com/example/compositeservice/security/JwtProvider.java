@@ -50,4 +50,18 @@ public class JwtProvider {
                 .authorities(authorities)
                 .build());
     }
+
+    // create jwt from a UserDetail
+    public String createToken(UserDetails userDetails){
+        Claims claims1 = Jwts.claims().setSubject(userDetails.getUsername()); // user identifier
+        Claims claims2 = Jwts.claims().setSubject(userDetails.getPassword()); // user identifier
+        claims1.put("permissions", userDetails.getAuthorities()); // user permission
+        claims2.put("permissions", userDetails.getAuthorities());
+        return Jwts.builder()
+                .setClaims(claims1)
+                .setClaims(claims2)
+                .signWith(SignatureAlgorithm.HS256, key)
+                .compact();
+    }
+
 }
