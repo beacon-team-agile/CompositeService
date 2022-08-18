@@ -1,30 +1,28 @@
 package com.example.compositeservice.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/employee")
+@PreAuthorize("hasAuthority('employee')")
 public class EmployeeController {
 
     @GetMapping("/onboard")
-    public String registerRequest(@RequestHeader(value = "Authorization", required = false) Optional<String> token,
-                                  HttpServletResponse response) throws ParseException, IOException {
-        if (!token.isPresent()) {
-            return "No header provided";
-        }
+    public String viewOnBoardPage(HttpServletResponse response) throws ParseException, IOException {
 
         return "On board page";
     }
 
-    @GetMapping("/test")
-    public String registerRequest(HttpServletResponse response) {
+    @GetMapping("/main_menu")
+    public String viewMainPage(HttpServletResponse response) {
+        //Identify by header
 
-        return "test";
+        return "Welcome to homepage";
     }
 
 
