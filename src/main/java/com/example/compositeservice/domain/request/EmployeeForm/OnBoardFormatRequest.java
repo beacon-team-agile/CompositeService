@@ -11,6 +11,7 @@ import java.util.List;
 @Setter
 @Builder
 public class OnBoardFormatRequest {
+	private Integer userId;
     private String firstName;
     private String lastName;
     private String middleName;

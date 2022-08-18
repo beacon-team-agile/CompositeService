@@ -49,6 +49,7 @@ public class EmployeeController {
 
         //Add new employee data
         Employee newEmployee = Employee.builder()
+        		.userId(onBoardFormatRequest.getUserId())
                 .firstName(onBoardFormatRequest.getFirstName())
                 .lastName(onBoardFormatRequest.getLastName())
                 .middleName(onBoardFormatRequest.getMiddleName())
