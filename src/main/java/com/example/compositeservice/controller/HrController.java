@@ -48,7 +48,7 @@ public class HrController {
 
     @GetMapping("/view-all-active-visa")
     public String viewAllActiveVisa(HttpServletResponse response) throws ParseException, IOException {
-
+        //Get all active visa
         return "Active visas: ";
     }
 
