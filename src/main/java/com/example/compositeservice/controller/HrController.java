@@ -1,5 +1,7 @@
 package com.example.compositeservice.controller;
 
+import com.example.compositeservice.domain.request.ApplicationService.EmailApplicationStatusRequest;
+import com.example.compositeservice.domain.response.ApplicationResponse.SingleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.AllEmployeesBriefInfoResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.EmployeeBriefInfoResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.SingleEmployeeResponse;
@@ -39,4 +41,11 @@ public class HrController {
     public SingleEmployeeResponse getEmployeeDetailById(@PathVariable String id) {
         return compositeService.getEmployeeById(id);
     }
+
+    @PostMapping("/applicationWorkFlow/email_result/{id}")
+    public SingleApplicationWorkFlowResponse emailApplicationResultById(@PathVariable Integer id,
+                                                                        @RequestBody EmailApplicationStatusRequest emailApplicationStatusRequest){
+        return compositeService.emailApplicationResultById(id, emailApplicationStatusRequest);
+    }
+
 }

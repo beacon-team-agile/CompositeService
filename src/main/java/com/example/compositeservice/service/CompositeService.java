@@ -1,14 +1,19 @@
 package com.example.compositeservice.service;
 
+import com.example.compositeservice.domain.request.ApplicationService.EmailApplicationStatusRequest;
+import com.example.compositeservice.domain.response.ApplicationResponse.SingleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.AllEmployeesBriefInfoResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.EmployeeBriefInfoResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.EmployeesResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.SingleEmployeeResponse;
 import com.example.compositeservice.domain.response.common.ResponseStatus;
 import com.example.compositeservice.entity.EmployeeService.Employee;
+import com.example.compositeservice.service.remote.RemoteApplicationService;
 import com.example.compositeservice.service.remote.RemoteEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -18,6 +23,7 @@ import java.util.List;
 public class CompositeService {
     private RemoteEmployeeService employeeService;
 
+    private RemoteApplicationService applicationService;
     private RestTemplate restTemplate;
 
     @Autowired
@@ -28,6 +34,11 @@ public class CompositeService {
     @Autowired
     public void setEmployeeService(RemoteEmployeeService employeeService) {
         this.employeeService = employeeService;
+    }
+
+    @Autowired
+    public void setApplicationService(RemoteApplicationService applicationService) {
+        this.applicationService = applicationService;
     }
 
     public AllEmployeesBriefInfoResponse getAllEmployeeBriefInfo() {
@@ -69,7 +80,10 @@ public class CompositeService {
 
     public SingleEmployeeResponse getEmployeeById(String id){
         return employeeService.GetEmployeeById(id);
+    }
 
-
+    public SingleApplicationWorkFlowResponse emailApplicationResultById(@PathVariable Integer id,
+                                                                        @RequestBody EmailApplicationStatusRequest emailApplicationStatusRequest){
+        return applicationService.emailApplicationResultById(id,emailApplicationStatusRequest);
     }
 }
