@@ -12,7 +12,6 @@ import java.io.Serializable;
 @Builder
 @ToString
 public class ApplicationWorkFlow implements Serializable {
-
     private Integer id;
 
     private String employee_id;

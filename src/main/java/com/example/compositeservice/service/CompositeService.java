@@ -46,7 +46,7 @@ public class CompositeService {
 
 
     public AllEmployeesBriefInfoResponse getAllEmployeeBriefInfo() {
-        EmployeesResponse employeeList = employeeService.GetAllEmployee();
+        EmployeesResponse employeeList = employeeService.getAllEmployee();
 
         List<EmployeeBriefInfoResponse> employeeBriefInfoResponseList = new ArrayList<>();
         String name;
@@ -83,7 +83,7 @@ public class CompositeService {
 
 
     public SingleEmployeeResponse getEmployeeById(String id){
-        return employeeService.GetEmployeeById(id);
+        return employeeService.getEmployeeById(id);
     }
 
     public SingleApplicationWorkFlowResponse emailApplicationResultById(@PathVariable Integer id,

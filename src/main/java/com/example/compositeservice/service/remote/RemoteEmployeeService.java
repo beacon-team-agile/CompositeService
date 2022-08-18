@@ -24,10 +24,10 @@ import org.springframework.web.multipart.MultipartFile;
 public interface RemoteEmployeeService {
 
     @GetMapping("employee-service/employee/{id}")
-    SingleEmployeeResponse GetEmployeeById(@PathVariable String id);
+    SingleEmployeeResponse getEmployeeById(@PathVariable String id);
 
     @GetMapping("employee-service/employee/all")
-    EmployeesResponse GetAllEmployee();
+    EmployeesResponse getAllEmployee();
 
     @PostMapping("employee-service/employee/add")
     Integer AddEmployee(Employee employee);

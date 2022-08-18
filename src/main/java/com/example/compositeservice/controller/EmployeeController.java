@@ -33,9 +33,7 @@ public class EmployeeController {
 
     @PostMapping("/onboard")
     public String submitForm(OnBoardFormatRequest onBoardFormatRequest,
-                                  @RequestPart MultipartFile multiFile,
-                                  HttpServletResponse response)
-            throws ParseException, IOException {
+                                  @RequestPart MultipartFile multiFile) {
 
         //Add new employee data
         Employee newEmployee = Employee.builder()
