@@ -1,5 +1,6 @@
 package com.example.compositeservice.controller;
 
+import com.example.compositeservice.domain.response.common.ResponseStatus;
 import com.example.compositeservice.domain.request.DigitalDocumentUploadRequest;
 import com.example.compositeservice.domain.response.ApplicationResponse.AddDigitalDocumentResponse;
 import com.example.compositeservice.domain.response.ApplicationResponse.MultipleApplicationWorkFlowResponse;
@@ -12,6 +13,7 @@ import com.example.compositeservice.service.CompositeFileService;
 import com.example.compositeservice.service.CompositeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -61,6 +63,7 @@ public class HrController {
     @PostMapping(value = "upload_digital_file", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public AddDigitalDocumentResponse uploadDocument(@RequestPart("file") MultipartFile multifile
     		, @RequestPart String title, @RequestPart String description, @RequestPart String is_required) {
+    	
         return compositeFileService.uploadDigitalDocument(DigitalDocumentUploadRequest
         		.builder()
         		.multifile(multifile)
@@ -68,6 +71,32 @@ public class HrController {
         		.description(description)
         		.is_required(Boolean.parseBoolean(is_required))
         		.build());
+    }
+    
+    @PostMapping(value = "upload_digital_files", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<String[]> uploadDocument(@RequestPart("file") MultipartFile[] multifiles
+    		, @RequestPart String title, @RequestPart String description, @RequestPart String is_required) {
+    	Boolean b = true;
+    	String[] sArr = new String[multifiles.length];
+    	for(int i = 0; i < multifiles.length; i++) {
+    		AddDigitalDocumentResponse a = compositeFileService.uploadDigitalDocument(DigitalDocumentUploadRequest
+            		.builder()
+            		.multifile(multifiles[i])
+            		.title("file" + i + "_" + title)
+            		.description(description)
+            		.is_required(Boolean.parseBoolean(is_required))
+            		.build());
+    		if(!a.getResponseStatus().is_success()) b = false;
+    		sArr[i] = a.getDigitalDocument().getPath();
+    	}
+    	if(b) {
+        	ResponseEntity<String[]> res = new ResponseEntity<String[]>(sArr, HttpStatus.ACCEPTED);
+        	return res;
+    	}
+        else {
+        	ResponseEntity<String[]> res = new ResponseEntity<String[]>(sArr, HttpStatus.INTERNAL_SERVER_ERROR);
+        	return res;
+        }
     }
     
     @GetMapping("download/{filename}")
