@@ -97,7 +97,7 @@
         </dependency>
         <dependency>
             <groupId>com.example</groupId>
-            <artifactId>AuthenticationServer</artifactId>
+            <artifactId>CompositeService</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
