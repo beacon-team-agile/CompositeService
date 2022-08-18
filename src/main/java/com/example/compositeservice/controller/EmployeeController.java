@@ -1,7 +1,9 @@
 package com.example.compositeservice.controller;
 
-import com.example.compositeservice.domain.request.EmplyeeForm.OnBoardFormatRequest;
+import com.example.compositeservice.domain.request.EmployeeForm.OnBoardFormatRequest;
 import com.example.compositeservice.domain.response.EmployeeResponse.FilePathResponse;
+import com.example.compositeservice.domain.response.EmployeeResponse.SingleEmployeeResponse;
+import com.example.compositeservice.domain.response.common.ResponseStatus;
 import com.example.compositeservice.entity.EmployeeService.Employee;
 import com.example.compositeservice.service.CompositeFileService;
 import com.example.compositeservice.service.CompositeService;
@@ -43,8 +45,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/onboard")
-    public String submitForm(OnBoardFormatRequest onBoardFormatRequest,
-                                  @RequestPart MultipartFile multiFile) {
+    public ResponseStatus submitOnboardForm(@RequestBody OnBoardFormatRequest onBoardFormatRequest) {
 
         //Add new employee data
         Employee newEmployee = Employee.builder()
@@ -68,10 +69,20 @@ public class EmployeeController {
                 .visaStatus(onBoardFormatRequest.getVisaStatus())
                 .personalDocument(onBoardFormatRequest.getPersonalDocument())
         .build();
-
-        this.compositeService.addEmployeeForm(newEmployee, multiFile);
-        return "On board page";
+        SingleEmployeeResponse ser = this.compositeService.addEmployee(newEmployee);
+        if(ser.getResponseStatus().is_success()) {
+        	return ResponseStatus.builder().is_success(true).message(ser.getEmployee().getId()).build();
+        }else {
+        	return ser.getResponseStatus();
+        }
     }
+    
+    @PostMapping("/uploads")
+    public ResponseStatus submitOnboardDocuments(@RequestPart String employeeId,
+                                  @RequestPart MultipartFile[] multiFile) {
+        return this.compositeService.addEmployeeForms(employeeId, multiFile);
+    }
+
 
     @GetMapping("/main_menu")
     public String viewMainPage(HttpServletResponse response) {
@@ -80,13 +91,13 @@ public class EmployeeController {
         return "Welcome to homepage";
     }
     
-    @GetMapping("download")
+    @GetMapping("/download")
     public ResponseEntity<ByteArrayResource> retrieveFile(@RequestPart String filename) {
         return compositeFileService.downloadDocument(filename);
     }
     
-    @GetMapping("getAllDocuments/{empId}")
-    public List<FilePathResponse> retrieveAllDocuments(@PathVariable String empId) {
+    @GetMapping("/view_all_documents")
+    public List<FilePathResponse> retrieveAllDocuments(@RequestPart String empId) {
         return compositeService.getFilePathList(empId);
     }
 

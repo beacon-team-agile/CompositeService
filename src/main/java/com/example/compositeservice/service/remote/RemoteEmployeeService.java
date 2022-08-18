@@ -11,11 +11,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
+
 import com.example.compositeservice.entity.EmployeeService.Employee;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +27,11 @@ public interface RemoteEmployeeService {
     EmployeesResponse getAllEmployee();
 
     @PostMapping("employee-service/employee/add")
-    Integer AddEmployee(Employee employee);
+    SingleEmployeeResponse AddEmployee(Employee employee);
+    
+
+    @PostMapping("employee-service/employee/update/{id}")
+    SingleEmployeeResponse updateEmployeeById(@PathVariable String id, @RequestBody Employee employee);
 
     @PostMapping(value = "employee-service/employee/document/upload", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE})
     ResponseStatus UploadDocument(@RequestPart MultipartFile multifile, @RequestPart String filename);
