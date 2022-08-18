@@ -28,16 +28,18 @@ public class HrController {
     @GetMapping("/view-all-active-visa")
     public String viewAllActiveVisa(HttpServletResponse response) throws ParseException, IOException {
 
-        return "Active visas";
+        return "Active visas: ";
     }
 
+    //Hr viewing all employee
     @GetMapping("employee/all_brief_info")
     public AllEmployeesBriefInfoResponse getAllEmployeeBriefInfo() {
         return compositeService.getAllEmployeeBriefInfo();
     }
 
 
-    @GetMapping("employee/{id}")
+    //Hr viewing employee by id
+    @GetMapping("/employee/{id}")
     public SingleEmployeeResponse getEmployeeDetailById(@PathVariable String id) {
         return compositeService.getEmployeeById(id);
     }
