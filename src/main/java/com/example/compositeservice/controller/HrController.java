@@ -3,6 +3,8 @@ package com.example.compositeservice.controller;
 import com.example.compositeservice.domain.request.DigitalDocumentUploadRequest;
 import com.example.compositeservice.domain.response.ApplicationResponse.AddDigitalDocumentResponse;
 import com.example.compositeservice.domain.response.ApplicationResponse.MultipleApplicationWorkFlowResponse;
+import com.example.compositeservice.domain.request.ApplicationService.EmailApplicationStatusRequest;
+import com.example.compositeservice.domain.response.ApplicationResponse.SingleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.AllEmployeesBriefInfoResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.EmployeeBriefInfoResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.SingleEmployeeResponse;
@@ -69,5 +71,12 @@ public class HrController {
     public ResponseEntity<ByteArrayResource> retrieveFile(@PathVariable String filename) {
         return compositeFileService.downloadDocument(filename);
     }
-    
+   
+
+    @PostMapping("/applicationWorkFlow/email_result/{id}")
+    public SingleApplicationWorkFlowResponse emailApplicationResultById(@PathVariable Integer id,
+                                                                        @RequestBody EmailApplicationStatusRequest emailApplicationStatusRequest){
+        return compositeService.emailApplicationResultById(id, emailApplicationStatusRequest);
+    }
+
 }

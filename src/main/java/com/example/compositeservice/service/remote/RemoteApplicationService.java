@@ -7,6 +7,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+
+import com.example.compositeservice.domain.request.ApplicationService.EmailApplicationStatusRequest;
+import com.example.compositeservice.domain.response.ApplicationResponse.SingleApplicationWorkFlowResponse;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import com.example.compositeservice.domain.response.ApplicationResponse.AddDigitalDocumentResponse;
 import com.example.compositeservice.domain.response.ApplicationResponse.MultipleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.response.ApplicationResponse.SingleDigitalDocumentResponse;
@@ -24,4 +32,10 @@ public interface RemoteApplicationService {
     
     @GetMapping("application-service/digitalDocument/{id}")
     public SingleDigitalDocumentResponse getDigitalDocumentById(@PathVariable Integer id);
+    
+    @GetMapping("application-service/applicationWorkFlow/email_result/{id}")
+    SingleApplicationWorkFlowResponse emailApplicationResultById(@PathVariable Integer id,
+                                                      @RequestBody EmailApplicationStatusRequest emailApplicationStatusRequest);
+
+
 }

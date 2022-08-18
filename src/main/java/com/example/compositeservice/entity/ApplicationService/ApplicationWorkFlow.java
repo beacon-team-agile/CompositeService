@@ -22,6 +22,6 @@ public class ApplicationWorkFlow implements Serializable {
     private String last_modification_date;
 
     private boolean status;
-
+s
     private String comment;
 }
