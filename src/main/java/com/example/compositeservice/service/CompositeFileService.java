@@ -50,11 +50,13 @@ public class CompositeFileService {
     
     public AddDigitalDocumentResponse uploadDigitalDocument(DigitalDocumentUploadRequest ddur) {
     	Integer dot = ddur.getMultifile().getOriginalFilename().lastIndexOf('.');
+    	System.out.println(dot);
     	if(dot == 0) {return AddDigitalDocumentResponse.builder().responseStatus(ResponseStatus.builder().is_success(false).message("file type undefined!").build()).build();}
     	String inferredType = ddur.getMultifile().getOriginalFilename().substring(dot);
     	SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
     	String dateFormat = sdf.format(Calendar.getInstance().getTime());
     	String docName = "digitalDocument_" + dateFormat.replace(" ", "_") + "_" + ddur.getTitle().replace(" ", "_") + inferredType;
+    	System.out.println(docName);
     	ResponseStatus rs = employeeService.UploadDocument(ddur.getMultifile(), docName);
     	if(rs.is_success()) {
     		return applicationService.addDigitalDocument(DigitalDocument.builder()

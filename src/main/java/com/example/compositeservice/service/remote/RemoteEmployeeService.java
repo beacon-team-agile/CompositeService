@@ -9,6 +9,7 @@ import feign.Headers;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,17 +33,17 @@ public interface RemoteEmployeeService {
     @PostMapping("employee-service/employee/add")
     Integer AddEmployee(Employee employee);
 
-    @PostMapping("employee-service/employee/document/upload")
+    @PostMapping(value = "employee-service/employee/document/upload", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE})
     ResponseStatus UploadDocument(@RequestPart MultipartFile multifile, @RequestPart String filename);
     
-    @PostMapping("employee-service/employee/document/upload_to_user")
+    @PostMapping(value = "employee-service/employee/document/upload_to_user", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE})
     ResponseStatus UploadDocumentToUser(@RequestPart MultipartFile multifile
     		,@RequestPart String userid, @RequestPart String title, @RequestPart String comment);
     
     @GetMapping("employee-service/employee/document/download")
     public ResponseEntity<ByteArrayResource> downloadFile(@RequestParam String filename);
 
-
-    @PostMapping("employee-service/employee/document/upload_to_user/{userId}")
-    void UploadNewDocumentToUser(@RequestPart MultipartFile multiFile, @PathVariable Integer userId);
+// Duplicate method
+//    @PostMapping("employee-service/employee/document/upload_to_user/{userId}")
+//    void UploadNewDocumentToUser(@RequestPart MultipartFile multiFile, @PathVariable Integer userId);
 }
