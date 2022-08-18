@@ -1,4 +1,4 @@
-package com.example.compositeservice.domain.request.EmplyeeForm;
+package com.example.compositeservice.domain.request.EmployeeForm;
 
 import com.example.compositeservice.entity.EmployeeService.*;
 import lombok.Builder;
