@@ -1,5 +1,6 @@
 package com.example.compositeservice.service.remote;
 
+import com.example.compositeservice.config.FeignEncoderConfig;
 import com.example.compositeservice.domain.response.EmployeeResponse.EmployeesResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.SingleEmployeeResponse;
 import com.example.compositeservice.domain.response.common.ResponseStatus;
@@ -19,7 +20,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@FeignClient("employee-service")
+@FeignClient(name = "employee-service", configuration = FeignEncoderConfig.class)
 public interface RemoteEmployeeService {
 
     @GetMapping("employee-service/employee/{id}")

@@ -12,6 +12,7 @@ import com.example.compositeservice.service.CompositeFileService;
 import com.example.compositeservice.service.CompositeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -55,12 +56,12 @@ public class HrController {
         return compositeService.getEmployeeById(id);
     }
     
-    @PostMapping("upload_digital_file")
-    public AddDigitalDocumentResponse uploadDocument(@RequestPart("file") MultipartFile file
+    @PostMapping(value = "upload_digital_file", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public AddDigitalDocumentResponse uploadDocument(@RequestPart("file") MultipartFile multifile
     		, @RequestPart String title, @RequestPart String description, @RequestPart String is_required) {
         return compositeFileService.uploadDigitalDocument(DigitalDocumentUploadRequest
         		.builder()
-        		.multifile(file)
+        		.multifile(multifile)
         		.title(title)
         		.description(description)
         		.is_required(Boolean.parseBoolean(is_required))
