@@ -96,7 +96,7 @@ public class CompositeService {
         Integer id = employeeService.AddEmployee(employee);
 
         //Add files
-        employeeService.UploadNewDocumentToUser(multiFile, id);
+        employeeService.UploadDocumentToUser(multiFile, id.toString(), "test title", "test comment");
     }
 
 
