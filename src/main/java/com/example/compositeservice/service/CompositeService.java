@@ -1,5 +1,6 @@
 package com.example.compositeservice.service;
 
+import com.example.compositeservice.domain.response.ApplicationResponse.MultipleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.request.ApplicationService.EmailApplicationStatusRequest;
 import com.example.compositeservice.domain.response.ApplicationResponse.SingleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.AllEmployeesBriefInfoResponse;
@@ -24,8 +25,8 @@ import java.util.List;
 @Service
 public class CompositeService {
     private RemoteEmployeeService employeeService;
-
     private RemoteApplicationService applicationService;
+
     private RestTemplate restTemplate;
 
     @Autowired
@@ -37,11 +38,12 @@ public class CompositeService {
     public void setEmployeeService(RemoteEmployeeService employeeService) {
         this.employeeService = employeeService;
     }
-
+    
     @Autowired
     public void setApplicationService(RemoteApplicationService applicationService) {
         this.applicationService = applicationService;
     }
+
 
     public AllEmployeesBriefInfoResponse getAllEmployeeBriefInfo() {
         EmployeesResponse employeeList = employeeService.getAllEmployee();
@@ -94,6 +96,9 @@ public class CompositeService {
         Integer id = employeeService.AddEmployee(employee);
 
         //Add files
-        employeeService.UploadNewDocumentToUser(multiFile, id);
+        employeeService.UploadDocumentToUser(multiFile, id.toString(), "test title", "test comment");
     }
+
+
+
 }

@@ -1,0 +1,143 @@
+{
+	"info": {
+		"_postman_id": "8cd1b48c-e9af-4c96-915c-200d3c31f063",
+		"name": "compound_collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22407837"
+	},
+	"item": [
+		{
+			"name": "http://localhost:9000/authentication-service/credential/login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\" : \"hr-test\",\r\n    \"password\" : \"1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9000/authentication-service/credential/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"authentication-service",
+						"credential",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:9000/housing-service/housing/all",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:9000/housing-service/housing/all",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"housing-service",
+						"housing",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_test",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIkMmEkMTAkSDhLbjVUeHJSd0x1WE44M2l5S2lDdVlTSnpGeldLNHB0VXBQWkdqcHlGekk5NWZuSVFUcE8iLCJwZXJtaXNzaW9ucyI6W3siYXV0aG9yaXR5IjoiaHIifSx7ImF1dGhvcml0eSI6ImVtcGxveWVlIn1dfQ.JCtNUvv63g9mJ_uISVW0iES2UchgP6VnyklRWSbeSkM",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:9000/composite-service/hr/applications",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"composite-service",
+						"hr",
+						"applications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "download_test",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIkMmEkMTAkSDhLbjVUeHJSd0x1WE44M2l5S2lDdVlTSnpGeldLNHB0VXBQWkdqcHlGekk5NWZuSVFUcE8iLCJwZXJtaXNzaW9ucyI6W3siYXV0aG9yaXR5IjoiaHIifSx7ImF1dGhvcml0eSI6ImVtcGxveWVlIn1dfQ.JCtNUvv63g9mJ_uISVW0iES2UchgP6VnyklRWSbeSkM",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:9000/composite-service/hr/download/Capture.PNG",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"composite-service",
+						"hr",
+						"download",
+						"Capture.PNG"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "upload_test",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIkMmEkMTAkSDhLbjVUeHJSd0x1WE44M2l5S2lDdVlTSnpGeldLNHB0VXBQWkdqcHlGekk5NWZuSVFUcE8iLCJwZXJtaXNzaW9ucyI6W3siYXV0aG9yaXR5IjoiaHIifSx7ImF1dGhvcml0eSI6ImVtcGxveWVlIn1dfQ.JCtNUvv63g9mJ_uISVW0iES2UchgP6VnyklRWSbeSkM",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:9000/composite-service/hr/download/Capture.PNG",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"composite-service",
+						"hr",
+						"download",
+						"Capture.PNG"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
