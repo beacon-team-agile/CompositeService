@@ -80,8 +80,8 @@ public class EmployeeController {
         return "Welcome to homepage";
     }
     
-    @GetMapping("download/{filename}")
-    public ResponseEntity<ByteArrayResource> retrieveFile(@PathVariable String filename) {
+    @GetMapping("download")
+    public ResponseEntity<ByteArrayResource> retrieveFile(@RequestPart String filename) {
         return compositeFileService.downloadDocument(filename);
     }
     
