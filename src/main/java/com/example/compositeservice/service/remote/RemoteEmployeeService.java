@@ -42,8 +42,4 @@ public interface RemoteEmployeeService {
     
     @GetMapping("employee-service/employee/document/download")
     public ResponseEntity<ByteArrayResource> downloadFile(@RequestParam String filename);
-
-// Possible duplication
-    @PostMapping("employee-service/employee/document/upload_to_user/{userId}")
-    void UploadNewDocumentToUser(@RequestPart MultipartFile multiFile, @PathVariable Integer userId);
 }

@@ -6,9 +6,11 @@ import com.example.compositeservice.domain.response.ApplicationResponse.SingleAp
 import com.example.compositeservice.domain.response.EmployeeResponse.AllEmployeesBriefInfoResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.EmployeeBriefInfoResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.EmployeesResponse;
+import com.example.compositeservice.domain.response.EmployeeResponse.FilePathResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.SingleEmployeeResponse;
 import com.example.compositeservice.domain.response.common.ResponseStatus;
 import com.example.compositeservice.entity.EmployeeService.Employee;
+import com.example.compositeservice.entity.EmployeeService.PersonalDocument;
 import com.example.compositeservice.service.remote.RemoteApplicationService;
 import com.example.compositeservice.service.remote.RemoteEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +23,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CompositeService {
+	
+	private final String DOWNLOAD_PREFIX = "localhost:9000/composite-service/employee/download/";
     private RemoteEmployeeService employeeService;
     private RemoteApplicationService applicationService;
 
@@ -94,9 +99,18 @@ public class CompositeService {
     public void addEmployeeForm(Employee employee, @RequestPart MultipartFile multiFile) {
         //Add employee
         Integer id = employeeService.AddEmployee(employee);
-
-        //Add files
         employeeService.UploadDocumentToUser(multiFile, id.toString(), "test title", "test comment");
+    }
+    
+    public List<FilePathResponse> getFilePathList(String employeeId){
+    	List<PersonalDocument> originalList = getEmployeeById(employeeId).getEmployee().getPersonalDocument();
+    	return originalList.stream().map(d->{ return FilePathResponse.builder()
+    			.title(d.getTitle())
+    			.comment(d.getComment())
+    			.path(DOWNLOAD_PREFIX + d.getPath())
+    			.build(); })
+    			.collect(Collectors.toList());
+    	
     }
 
 
