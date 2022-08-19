@@ -114,6 +114,9 @@ public class CompositeService {
     public SingleEmployeeResponse getEmployeeById(String id){
         return employeeService.getEmployeeById(id);
     }
+    public SingleEmployeeResponse updateEmployeeById(String id, Employee e) {
+    	return employeeService.updateEmployeeById(id, e);
+    }
     
     public SingleEmployeeResponse updateEmployeeInfoById(String id,
     		Map<String, String> infos) {

@@ -202,4 +202,12 @@ public class HrController {
 
     }
     
+    //Hr viewing employee by id
+    @PatchMapping("/house/assign_employee/{id}")
+    public SingleEmployeeResponse UpdateEmployeeHousing(@PathVariable String id, @RequestParam Integer houseId) {
+    	Employee e = compositeService.getEmployeeById(id).getEmployee();
+    	e.setHouseId(houseId);
+    	return compositeService.updateEmployeeById(id, e);
+    }
+    
 }
