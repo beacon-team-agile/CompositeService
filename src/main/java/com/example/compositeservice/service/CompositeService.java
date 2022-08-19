@@ -116,6 +116,10 @@ public class CompositeService {
     public SingleEmployeeResponse addEmployee(Employee employee) {
     	return employeeService.AddEmployee(employee);
     }
+    
+    public EmployeesResponse paginatedEmployees(Integer pageNo, Integer pageSize) {
+    	return this.employeeService.GetEmployeeList(pageNo, pageSize);
+    }
 
     public ResponseStatus addEmployeeForms(String employeeId, MultipartFile[] multiFiles) {
         //Add employee

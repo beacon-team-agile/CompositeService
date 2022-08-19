@@ -27,6 +27,9 @@ public interface RemoteEmployeeService {
 
     @GetMapping("employee-service/employee/all")
     EmployeesResponse getAllEmployee();
+    
+    @GetMapping("employee-service/employee/list/{pageNo}")
+    EmployeesResponse GetEmployeeList(@PathVariable Integer pageNo, @RequestParam Integer pageSize);
 
     @PostMapping("employee-service/employee/updateVisaStatus")
     SingleEmployeeResponse updateEmployeeVisaStatusById(@RequestParam String id,
