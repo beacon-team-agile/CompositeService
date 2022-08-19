@@ -106,7 +106,7 @@ public class HrController {
     
     @GetMapping("download/{filename}")
     public ResponseEntity<ByteArrayResource> retrieveFile(@PathVariable String filename) {
-        return compositeFileService.downloadDocument(filename);
+        return compositeFileService.downloadDocumentEncryptedKey(filename);
     }
    
 

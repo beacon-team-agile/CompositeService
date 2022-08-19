@@ -23,7 +23,7 @@ public class EmployeeController {
     @PostMapping("/updateVisaStatus")
     public SingleEmployeeResponse updateEmployeeVisaStatusById(@RequestParam String id,
                                                                @RequestBody VisaStatusUpdateRequest visaStatusUpdateRequest) {
-        return compositeService.updateEmployeeVisaStatusById(id, visaStatusUpdateRequest);
-    }
+        return compositeService.updateEmployeeVisaStatusById(id, visaStatusUpdateRequest);}
+
 
 }
