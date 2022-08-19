@@ -132,5 +132,9 @@ public class CompositeService {
     	
     }
 
+    public MultipleApplicationWorkFlowResponse getAllInactiveApplicationWorkFlow(){
+        return applicationService.getAllInactiveApplicationWorkFlow();
+
+    }
 
 }
