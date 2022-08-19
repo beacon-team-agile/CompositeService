@@ -3,7 +3,7 @@ package com.example.compositeservice.service.remote;
 import com.example.compositeservice.domain.request.HousingService.FacilityReportDetailRequest;
 import com.example.compositeservice.domain.request.HousingService.FacilityReportRequest;
 import com.example.compositeservice.domain.response.HousingResponse.*;
-import com.example.compositeservice.entity.HousingService.FacilityReport;
+import com.example.compositeservice.entity.HousingService.FacilityReportAbstract;
 import com.example.compositeservice.entity.HousingService.FacilityReportDetail;
 import com.example.compositeservice.entity.HousingService.House;
 import com.example.compositeservice.entity.HousingService.Landlord;

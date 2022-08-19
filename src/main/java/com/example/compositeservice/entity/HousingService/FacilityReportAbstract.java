@@ -1,4 +1,5 @@
 package com.example.compositeservice.entity.HousingService;
+import java.io.Serializable;
 import java.util.Date;
 import lombok.*;
 
@@ -12,11 +13,11 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @Builder
 @ToString
-public class FacilityReport {
+public class FacilityReportAbstract implements Serializable{
     @Id
 
     private Integer id;
-    private String facilityId;
+    private Integer facilityId;
     private String employeeId;
     private String title;
     private String description;

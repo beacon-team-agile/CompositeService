@@ -1,7 +1,9 @@
 package com.example.compositeservice.domain.response.HousingResponse;
 
+import java.io.Serializable;
+
 import com.example.compositeservice.domain.response.common.ResponseStatus;
-import com.example.compositeservice.entity.HousingService.FacilityReport;
+import com.example.compositeservice.entity.HousingService.FacilityReportAbstract;
 import lombok.*;
 
 @Getter
@@ -9,7 +11,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SingleFacilityReportResponse {
+public class SingleFacilityReportResponse implements Serializable{
     private ResponseStatus responseStatus;
-    private FacilityReport facilityReport;
+    private FacilityReportAbstract facilityReport;
 }
