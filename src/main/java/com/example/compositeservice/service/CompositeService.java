@@ -125,24 +125,9 @@ public class CompositeService {
 
     }
 
-    public SingleFacilityReportResponse createFacilityReport(@RequestBody FacilityReportRequest request) {
+    public SingleFacilityReportResponse createFacilityReport(FacilityReportRequest request) {
 
-        housingService.addFacilityReport(request);
-        System.out.println(2);
-        return SingleFacilityReportResponse.builder()
-                .responseStatus(ResponseStatus.builder()
-                        .is_success(true)
-                        .message("Create Facility Report Successfully!")
-                        .build())
-                .facilityReport(FacilityReport.builder()
-                        .facilityId(request.getFacilityId())
-                        .employeeId(request.getEmployeeId())
-                        .title(request.getTitle())
-                        .description(request.getDescription())
-                        .createDate(Calendar.getInstance().getTime())
-                        .status(request.getStatus())
-                        .build())
-                .build();
+        return housingService.addFacilityReport(request);
 
     }
 
