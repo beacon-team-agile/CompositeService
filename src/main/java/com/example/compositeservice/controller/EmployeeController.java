@@ -1,9 +1,12 @@
 package com.example.compositeservice.controller;
 
 import com.example.compositeservice.domain.request.EmployeeService.VisaStatusUpdateRequest;
+import com.example.compositeservice.domain.request.HousingService.FacilityReportDetailRequest;
 import com.example.compositeservice.domain.request.HousingService.FacilityReportRequest;
 import com.example.compositeservice.domain.response.EmployeeResponse.SingleEmployeeResponse;
+import com.example.compositeservice.domain.response.HousingService.SingleFacilityReportDetailResponse;
 import com.example.compositeservice.domain.response.HousingService.SingleFacilityReportResponse;
+import com.example.compositeservice.domain.response.HousingService.SingleHouseResponse;
 import com.example.compositeservice.service.CompositeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.compositeservice.service.CompositeFileService;
@@ -44,10 +47,21 @@ public class EmployeeController {
     }
 
     
+    @GetMapping("/house/view-house-detail")
+    public SingleHouseResponse viewHouseInfo(@RequestParam String employeeId) {
+        return compositeService.getHouseByEmployeeId(employeeId);
+
+    }
+    
     @PostMapping("/house/report-house-detail")
     public SingleFacilityReportResponse createFacilityReport(@RequestBody FacilityReportRequest request) {
         return compositeService.createFacilityReport(request);
 
+    }
+    
+    @PostMapping("house/report-house-detail/comment")
+    public SingleFacilityReportDetailResponse createFacilityReportDetail(@RequestBody FacilityReportDetailRequest request) {
+        return compositeService.createFacilityReportDetail(request);
     }
 
 }

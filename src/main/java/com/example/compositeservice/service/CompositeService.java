@@ -9,6 +9,7 @@ import com.example.compositeservice.domain.response.ApplicationResponse.SingleAp
 import com.example.compositeservice.domain.response.EmployeeResponse.*;
 import com.example.compositeservice.domain.response.HousingService.SingleFacilityReportDetailResponse;
 import com.example.compositeservice.domain.response.HousingService.SingleFacilityReportResponse;
+import com.example.compositeservice.domain.response.HousingService.SingleHouseResponse;
 import com.example.compositeservice.domain.response.common.ResponseStatus;
 import com.example.compositeservice.entity.EmployeeService.Employee;
 import com.example.compositeservice.entity.EmployeeService.PersonalDocument;
@@ -241,6 +242,15 @@ public class CompositeService {
 
         return housingService.addFacilityReportDetail(request);
 
+    }
+    
+    public SingleHouseResponse getHouseById(Integer houseId) {
+    	return housingService.getHouseById(houseId);
+    }
+    
+    public SingleHouseResponse getHouseByEmployeeId(String employeeId) {
+    	Integer hid = getEmployeeById(employeeId).getEmployee().getHouseId();
+    	return housingService.getHouseById(hid);
     }
     
     

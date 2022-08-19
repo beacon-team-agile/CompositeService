@@ -1,5 +1,9 @@
 package com.example.compositeservice.entity.HousingService;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 import lombok.*;
 
 @Getter
@@ -9,8 +13,13 @@ import lombok.*;
 @Builder
 @ToString
 public class House {
-    private Integer id;
-    private Integer landlordId;
+    private Integer Id;
+
+    private Landlord landlord;
+
     private String address;
+
     private Integer maxOccupant;
+
+    private List<Facility> facilityList = new ArrayList<>();
 }
