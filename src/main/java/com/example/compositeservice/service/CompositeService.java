@@ -107,8 +107,6 @@ public class CompositeService {
     public SingleEmployeeResponse addEmployee(Employee employee) {
     	return employeeService.AddEmployee(employee);
     }
-    
-
 
     public ResponseStatus addEmployeeForms(String employeeId, MultipartFile[] multiFiles) {
         //Add employee
