@@ -48,7 +48,7 @@ public class HrController {
     }
 
     @GetMapping("/view-all-active-visa")
-    public EmployeeActiveVisaResponse viewAllActiveVisa(HttpServletResponse response) throws ParseException, IOException {
+    public EmployeeActiveVisaResponse viewAllActiveVisa(HttpServletResponse response) {
         //Get all active visa
         return EmployeeActiveVisaResponse.builder()
                 .employeeActiveVisa(compositeService.getAllActiveEmployee()).build();

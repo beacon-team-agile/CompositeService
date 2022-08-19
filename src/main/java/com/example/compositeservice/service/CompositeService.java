@@ -157,7 +157,7 @@ public class CompositeService {
                     try {
                         Date endDate =new SimpleDateFormat("MM/dd/yyyy").parse(visaStatus.getEndDate());
                         Date startDate =new SimpleDateFormat("MM/dd/yyyy").parse(visaStatus.getStartDate());
-                        remainingDays = "" + daysBetween(endDate, startDate);
+                        remainingDays = "" + daysBetween(startDate, endDate);
                     } catch (ParseException e) {
                         throw new RuntimeException(e);
                     }
