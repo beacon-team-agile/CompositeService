@@ -8,9 +8,11 @@ import com.example.compositeservice.domain.response.ApplicationResponse.AddDigit
 import com.example.compositeservice.domain.response.ApplicationResponse.MultipleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.response.ApplicationResponse.SingleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.AllEmployeesBriefInfoResponse;
+import com.example.compositeservice.domain.response.EmployeeResponse.EmployeeActiveVisaResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.SingleEmployeeResponse;
 
 import com.example.compositeservice.entity.EmployeeService.Employee;
+import com.example.compositeservice.entity.EmployeeService.VisaStatus;
 import com.example.compositeservice.service.CompositeFileService;
 
 import com.example.compositeservice.domain.response.HousingResponse.HousingHRResponse;
@@ -60,10 +62,21 @@ public class HrController {
         this.compositeFileService = compositeFileService;
     }
 
+    @GetMapping("/view-specific-active-visa/{pageNo}")
+    public List<VisaStatus> viewPagesActiveVisa(@PathVariable Integer pageNo, @RequestParam Integer pageSize) throws ParseException, IOException {
+    	List<Employee> l = compositeService.paginatedEmployees(pageNo, pageSize).getEmployees();
+        return l.stream().map(p->{
+        	for(VisaStatus v : p.getVisaStatus()) {
+        		if(v.getActiveFlag()) { return v; }
+        	}return null;
+        }).collect(Collectors.toList());
+    }
+    
     @GetMapping("/view-all-active-visa")
-    public String viewAllActiveVisa(HttpServletResponse response) throws ParseException, IOException {
-
-        return "Active visas";
+    public EmployeeActiveVisaResponse viewAllActiveVisa(HttpServletResponse response) {
+        //Get all active visa
+        return EmployeeActiveVisaResponse.builder()
+                .employeeActiveVisa(compositeService.getAllActiveEmployee()).build();
     }
 
     @GetMapping("employee/all_brief_info")
