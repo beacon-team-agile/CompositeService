@@ -8,14 +8,17 @@ import com.example.compositeservice.domain.request.HousingService.FacilityReport
 import com.example.compositeservice.domain.response.ApplicationResponse.MultipleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.response.ApplicationResponse.SingleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.AllEmployeesBriefInfoResponse;
+import com.example.compositeservice.domain.response.EmployeeResponse.EmployeeActiveVisa;
 import com.example.compositeservice.domain.response.EmployeeResponse.EmployeeBriefInfoResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.EmployeesResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.FilePathResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.SingleEmployeeResponse;
+import com.example.compositeservice.domain.response.EmployeeResponse.VisaStatusInfo;
 import com.example.compositeservice.domain.response.HousingResponse.*;
 import com.example.compositeservice.domain.response.common.ResponseStatus;
 import com.example.compositeservice.entity.EmployeeService.Employee;
 import com.example.compositeservice.entity.EmployeeService.PersonalDocument;
+import com.example.compositeservice.entity.EmployeeService.VisaStatus;
 import com.example.compositeservice.entity.HousingService.*;
 import com.example.compositeservice.service.remote.RemoteApplicationService;
 import com.example.compositeservice.service.remote.RemoteEmployeeService;
@@ -211,6 +214,44 @@ public class CompositeService {
     public int daysBetween(Date d1, Date d2){
         return (int)( (d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
         		}
+    
+    public List<EmployeeActiveVisa> getAllActiveEmployee() {
+        List<Employee> employeeList = employeeService.getAllEmployee().getEmployees();
+        List<EmployeeActiveVisa> filteredEmployee = new ArrayList<>();
+
+        for (Employee employee: employeeList) {
+            List<VisaStatus> visaStatusList = employee.getVisaStatus();
+            String fullName = employee.getFirstName() + employee.getLastName();
+            List<VisaStatusInfo> visaStatusInfoList = new ArrayList<>();
+            for (VisaStatus visaStatus : visaStatusList) {
+                if (visaStatus.getActiveFlag()) {
+                    String remainingDays = "";
+                    try {
+                        Date endDate =new SimpleDateFormat("MM/dd/yyyy").parse(visaStatus.getEndDate());
+                        Date startDate =new SimpleDateFormat("MM/dd/yyyy").parse(visaStatus.getStartDate());
+                        remainingDays = "" + daysBetween(startDate, endDate);
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+                    VisaStatusInfo visaStatusInfo =
+                            VisaStatusInfo.builder()
+                            .visaType(visaStatus.getVisaType())
+                            .expirationDate(visaStatus.getEndDate())
+                            .dayLeft(remainingDays).build();
+
+                    visaStatusInfoList.add(visaStatusInfo);
+                }
+            }
+
+            if (visaStatusInfoList.size() != 0) {
+                filteredEmployee.add(EmployeeActiveVisa.builder()
+                        .employeeFullName(fullName)
+                        .workAuthorizationType(visaStatusInfoList)
+                        .build());
+            }
+        }
+        return filteredEmployee;
+    }
 
     public SingleFacilityReportResponse createFacilityReport(FacilityReportRequest request) {
 
