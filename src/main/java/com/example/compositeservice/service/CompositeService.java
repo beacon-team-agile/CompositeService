@@ -2,6 +2,7 @@ package com.example.compositeservice.service;
 
 import com.example.compositeservice.domain.response.ApplicationResponse.MultipleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.request.ApplicationService.EmailApplicationStatusRequest;
+import com.example.compositeservice.domain.request.EmployeeForm.OnBoardFormatRequest;
 import com.example.compositeservice.domain.request.EmployeeService.VisaStatusUpdateRequest;
 import com.example.compositeservice.domain.response.ApplicationResponse.SingleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.*;
@@ -25,11 +26,14 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -110,6 +114,31 @@ public class CompositeService {
         return employeeService.updateEmployeeVisaStatusById(id, visaStatusUpdateRequest);
     }
 
+    public SingleEmployeeResponse updateEmployeeInfoById(String id,
+    		Map<String, String> infos) {
+	    	SingleEmployeeResponse ser = getEmployeeById(id);
+	    	if(ser.getResponseStatus().is_success()) {
+	    		Employee e = ser.getEmployee();
+	    		e.setFirstName(infos.getOrDefault("firstName", e.getFirstName()));
+	    		e.setLastName(infos.getOrDefault("lastName", e.getLastName()));
+	    		e.setMiddleName(infos.getOrDefault("middleName", e.getMiddleName()));
+	    		e.setPreferredName(infos.getOrDefault("preferredName", e.getPreferredName()));
+	    		e.setCellPhone(infos.getOrDefault("cellPhone", e.getCellPhone()));
+	    		e.setAlternatePhone(infos.getOrDefault("alternatePhone", e.getAlternatePhone()));
+	    		e.setGender(infos.getOrDefault("gender", e.getGender()));
+	    		e.setEmail(infos.getOrDefault("email", e.getEmail()));
+	    		e.setSsn(infos.getOrDefault("ssn", e.getSsn()));
+	    		e.setDob(infos.getOrDefault("dob", e.getDob()));
+	    		e.setDriverLicense(infos.getOrDefault("driverLicense", e.getDriverLicense()));
+	    		e.setDriverLicenseExpiration(infos.getOrDefault("driverLicenseExpiration", e.getDriverLicenseExpiration()));
+	    		e.setStartDate(infos.getOrDefault("startDate", e.getStartDate()));
+	    		e.setEndDate(infos.getOrDefault("endDate", e.getEndDate()));
+	    		return employeeService.updateEmployeeById(id, e);
+	    		}
+	    	else {
+	    		return SingleEmployeeResponse.builder().responseStatus(ResponseStatus.builder().is_success(false).build()).build();
+	    	}
+    }
     
     public SingleEmployeeResponse addEmployee(Employee employee) {
     	return employeeService.AddEmployee(employee);
