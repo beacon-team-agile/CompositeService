@@ -3,12 +3,17 @@ package com.example.compositeservice.service;
 import com.example.compositeservice.domain.response.ApplicationResponse.MultipleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.request.ApplicationService.EmailApplicationStatusRequest;
 import com.example.compositeservice.domain.request.EmployeeService.VisaStatusUpdateRequest;
+import com.example.compositeservice.domain.request.HousingService.FacilityReportDetailRequest;
+import com.example.compositeservice.domain.request.HousingService.FacilityReportRequest;
 import com.example.compositeservice.domain.response.ApplicationResponse.SingleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.*;
+import com.example.compositeservice.domain.response.HousingService.SingleFacilityReportDetailResponse;
+import com.example.compositeservice.domain.response.HousingService.SingleFacilityReportResponse;
 import com.example.compositeservice.domain.response.common.ResponseStatus;
 import com.example.compositeservice.entity.EmployeeService.Employee;
 import com.example.compositeservice.entity.EmployeeService.PersonalDocument;
 import com.example.compositeservice.entity.EmployeeService.VisaStatus;
+import com.example.compositeservice.entity.HousingService.FacilityReportDetail;
 import com.example.compositeservice.service.remote.RemoteApplicationService;
 import com.example.compositeservice.service.remote.RemoteEmployeeService;
 import com.example.compositeservice.service.remote.RemoteHousingService;
@@ -29,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -224,4 +230,18 @@ public class CompositeService {
         }
         return filteredEmployee;
     }
+    
+    public SingleFacilityReportResponse createFacilityReport(FacilityReportRequest request) {
+
+        return housingService.addFacilityReport(request);
+
+    }
+    
+    public SingleFacilityReportDetailResponse createFacilityReportDetail(FacilityReportDetailRequest request) {
+
+        return housingService.addFacilityReportDetail(request);
+
+    }
+    
+    
 }
