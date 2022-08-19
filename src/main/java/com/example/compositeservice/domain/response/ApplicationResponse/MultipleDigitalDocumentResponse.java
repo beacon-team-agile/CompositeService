@@ -7,11 +7,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
-public class SingleApplicationWorkFlowResponse {
+public class MultipleDigitalDocumentResponse {
     private ResponseStatus responseStatus;
-
-    private ApplicationWorkFlow applicationWorkFlow;
+    private List<DigitalDocument> digitalDocumentList;
 }

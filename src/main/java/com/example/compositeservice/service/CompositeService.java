@@ -1,14 +1,17 @@
 package com.example.compositeservice.service;
 
+import com.example.compositeservice.domain.response.ApplicationResponse.MultipleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.request.ApplicationService.EmailApplicationStatusRequest;
 import com.example.compositeservice.domain.request.EmployeeService.VisaStatusUpdateRequest;
 import com.example.compositeservice.domain.response.ApplicationResponse.SingleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.AllEmployeesBriefInfoResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.EmployeeBriefInfoResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.EmployeesResponse;
+import com.example.compositeservice.domain.response.EmployeeResponse.FilePathResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.SingleEmployeeResponse;
 import com.example.compositeservice.domain.response.common.ResponseStatus;
 import com.example.compositeservice.entity.EmployeeService.Employee;
+import com.example.compositeservice.entity.EmployeeService.PersonalDocument;
 import com.example.compositeservice.service.remote.RemoteApplicationService;
 import com.example.compositeservice.service.remote.RemoteEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,16 +19,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CompositeService {
+	
+	private final String DOWNLOAD_PREFIX = "localhost:9000/composite-service/employee/download/";
     private RemoteEmployeeService employeeService;
-
     private RemoteApplicationService applicationService;
+
     private RestTemplate restTemplate;
 
     @Autowired
@@ -37,11 +45,12 @@ public class CompositeService {
     public void setEmployeeService(RemoteEmployeeService employeeService) {
         this.employeeService = employeeService;
     }
-
+    
     @Autowired
     public void setApplicationService(RemoteApplicationService applicationService) {
         this.applicationService = applicationService;
     }
+
 
     public AllEmployeesBriefInfoResponse getAllEmployeeBriefInfo() {
         EmployeesResponse employeeList = employeeService.getAllEmployee();
@@ -88,9 +97,26 @@ public class CompositeService {
                                                                         @RequestBody EmailApplicationStatusRequest emailApplicationStatusRequest){
         return applicationService.emailApplicationResultById(id,emailApplicationStatusRequest);
     }
-
     public SingleEmployeeResponse updateEmployeeVisaStatusById(@RequestParam String id,
                                                                @RequestBody VisaStatusUpdateRequest visaStatusUpdateRequest) {
         return employeeService.updateEmployeeVisaStatusById(id, visaStatusUpdateRequest);
     }
+    public void addEmployeeForm(Employee employee, @RequestPart MultipartFile multiFile) {
+        //Add employee
+        Integer id = employeeService.AddEmployee(employee);
+        employeeService.UploadDocumentToUser(multiFile, id.toString(), "test title", "test comment");
+    }
+    
+    public List<FilePathResponse> getFilePathList(String employeeId){
+    	List<PersonalDocument> originalList = getEmployeeById(employeeId).getEmployee().getPersonalDocument();
+    	return originalList.stream().map(d->{ return FilePathResponse.builder()
+    			.title(d.getTitle())
+    			.comment(d.getComment())
+    			.path(DOWNLOAD_PREFIX + d.getPath())
+    			.build(); })
+    			.collect(Collectors.toList());
+    	
+    }
+
+
 }
