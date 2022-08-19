@@ -1,10 +1,14 @@
 package com.example.compositeservice.controller;
 
 import com.example.compositeservice.domain.request.ApplicationService.EmailApplicationStatusRequest;
+import com.example.compositeservice.domain.request.HousingService.FacilityReportDetailRequest;
+import com.example.compositeservice.domain.request.HousingService.FacilityReportRequest;
 import com.example.compositeservice.domain.response.ApplicationResponse.SingleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.AllEmployeesBriefInfoResponse;
-import com.example.compositeservice.domain.response.EmployeeResponse.EmployeeBriefInfoResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.SingleEmployeeResponse;
+import com.example.compositeservice.domain.response.HousingResponse.HousingHRResponse;
+import com.example.compositeservice.domain.response.HousingResponse.SingleFacilityReportDetailResponse;
+import com.example.compositeservice.domain.response.HousingResponse.SingleFacilityReportResponse;
 import com.example.compositeservice.service.CompositeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -48,4 +52,13 @@ public class HrController {
         return compositeService.emailApplicationResultById(id, emailApplicationStatusRequest);
     }
 
+    @GetMapping("house/view-house-detail/{houseId}")
+    public HousingHRResponse getHRHouseDetail(@PathVariable Integer houseId) {
+        return compositeService.getHRHouseDetail(houseId);
+    }
+
+    @PostMapping("house/report-house-detail/comment")
+    public SingleFacilityReportDetailResponse createFacilityReportDetail(@RequestBody FacilityReportDetailRequest request) {
+        return compositeService.createFacilityReportDetail(request);
+    }
 }

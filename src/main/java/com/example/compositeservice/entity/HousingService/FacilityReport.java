@@ -10,7 +10,7 @@ import lombok.*;
 @ToString
 public class FacilityReport {
     private Integer id;
-    private Integer facilityId;
+    private String facilityId;
     private String employeeId;
     private String title;
     private String description;

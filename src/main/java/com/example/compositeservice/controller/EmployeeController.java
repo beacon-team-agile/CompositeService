@@ -1,6 +1,10 @@
 package com.example.compositeservice.controller;
 
 import com.example.compositeservice.domain.request.EmplyeeForm.OnBoardFormatRequest;
+import com.example.compositeservice.domain.request.HousingService.FacilityReportDetailRequest;
+import com.example.compositeservice.domain.request.HousingService.FacilityReportRequest;
+import com.example.compositeservice.domain.response.HousingResponse.SingleFacilityReportDetailResponse;
+import com.example.compositeservice.domain.response.HousingResponse.SingleFacilityReportResponse;
 import com.example.compositeservice.entity.EmployeeService.Employee;
 import com.example.compositeservice.service.CompositeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,5 +76,19 @@ public class EmployeeController {
         return "Welcome to homepage";
     }
 
+    @PostMapping("/house/report-house-detail")
+    public SingleFacilityReportResponse createFacilityReport(@RequestBody FacilityReportRequest request) {
+        return compositeService.createFacilityReport(request);
+    }
+
+    @PostMapping("house/report-house-detail/comment")
+    public SingleFacilityReportDetailResponse createFacilityReportDetail(@RequestBody FacilityReportDetailRequest request) {
+        return compositeService.createFacilityReportDetail(request);
+    }
+
+//    @GetMapping("/house/view-house-detail/{houseId}")
+//    public HousingEmployeeResponse getEmployeeHouseDetail(@PathVariable Integer houseId) {
+//        return compositeService.getEmployeeHouseDetail(houseId);
+//    }
 
 }
