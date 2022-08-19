@@ -1,6 +1,7 @@
 package com.example.compositeservice.service;
 
 import com.example.compositeservice.domain.request.ApplicationService.EmailApplicationStatusRequest;
+import com.example.compositeservice.domain.request.EmployeeService.VisaStatusUpdateRequest;
 import com.example.compositeservice.domain.response.ApplicationResponse.SingleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.AllEmployeesBriefInfoResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.EmployeeBriefInfoResponse;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -85,5 +87,10 @@ public class CompositeService {
     public SingleApplicationWorkFlowResponse emailApplicationResultById(@PathVariable Integer id,
                                                                         @RequestBody EmailApplicationStatusRequest emailApplicationStatusRequest){
         return applicationService.emailApplicationResultById(id,emailApplicationStatusRequest);
+    }
+
+    public SingleEmployeeResponse updateEmployeeVisaStatusById(@RequestParam String id,
+                                                               @RequestBody VisaStatusUpdateRequest visaStatusUpdateRequest) {
+        return employeeService.updateEmployeeVisaStatusById(id, visaStatusUpdateRequest);
     }
 }
