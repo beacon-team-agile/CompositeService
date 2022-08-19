@@ -5,18 +5,24 @@ import com.example.compositeservice.domain.request.EmployeeForm.OnBoardFormatReq
 import com.example.compositeservice.domain.request.EmployeeService.VisaStatusUpdateRequest;
 import com.example.compositeservice.domain.request.HousingService.FacilityReportDetailRequest;
 import com.example.compositeservice.domain.request.HousingService.FacilityReportRequest;
+import com.example.compositeservice.domain.response.ApplicationResponse.MultipleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.response.ApplicationResponse.SingleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.AllEmployeesBriefInfoResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.EmployeeBriefInfoResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.EmployeesResponse;
+import com.example.compositeservice.domain.response.EmployeeResponse.FilePathResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.SingleEmployeeResponse;
 import com.example.compositeservice.domain.response.HousingResponse.*;
 import com.example.compositeservice.domain.response.common.ResponseStatus;
 import com.example.compositeservice.entity.EmployeeService.Employee;
+import com.example.compositeservice.entity.EmployeeService.PersonalDocument;
 import com.example.compositeservice.entity.HousingService.*;
+import com.example.compositeservice.service.remote.RemoteApplicationService;
 import com.example.compositeservice.service.remote.RemoteEmployeeService;
 import com.example.compositeservice.service.remote.RemoteHousingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,8 +46,13 @@ import java.util.List;
 
 @Service
 public class CompositeService {
+	
+	private final String AES_KEY = "securedEndpoint123";
+	private final String AES_SALT = "414243444546";
+	private final String DOWNLOAD_PREFIX = "localhost:9000/composite-service/employee/download/";
     private RemoteEmployeeService employeeService;
     private RemoteHousingService housingService;
+    private RemoteApplicationService applicationService;
     private RestTemplate restTemplate;
 
     @Autowired
@@ -53,14 +64,17 @@ public class CompositeService {
     public void setEmployeeService(RemoteEmployeeService employeeService) {
         this.employeeService = employeeService;
     }
-
+    @Autowired
+    public void setApplicationService(RemoteApplicationService applicationService) {
+        this.applicationService = applicationService;
+    }
     @Autowired
     public void setHousingService(RemoteHousingService housingService) {
         this.housingService = housingService;
     }
 
     public AllEmployeesBriefInfoResponse getAllEmployeeBriefInfo() {
-        EmployeesResponse employeeList = employeeService.GetAllEmployee();
+        EmployeesResponse employeeList = employeeService.getAllEmployee();
 
         List<EmployeeBriefInfoResponse> employeeBriefInfoResponseList = new ArrayList<>();
         String name;
@@ -97,14 +111,24 @@ public class CompositeService {
 
 
     public SingleEmployeeResponse getEmployeeById(String id){
-        return employeeService.GetEmployeeById(id);
+        return employeeService.getEmployeeById(id);
     }
 
 
-    public void addEmployeeForm(Employee employee, @RequestPart MultipartFile multiFile) {
-        //Add employee
-        Integer id = employeeService.AddEmployee(employee);
 
+
+    public ResponseStatus addEmployeeForms(String employeeId, MultipartFile[] multiFiles) {
+        //Add employee
+        SingleEmployeeResponse emp = employeeService.getEmployeeById(employeeId);
+        if(!emp.getResponseStatus().is_success()) {
+        	return emp.getResponseStatus();
+        }
+        for(int i = 0;i < multiFiles.length;i++) {
+            ResponseStatus rs = employeeService.UploadDocumentToUser(multiFiles[i], emp.getEmployee().getId(), multiFiles[i].getOriginalFilename(), "Initial Upload");
+            if(!rs.is_success()) return rs;
+        }
+        return ResponseStatus.builder().is_success(true).message("Uploads all succeeded").build();
+    }
 
     public SingleEmployeeResponse updateEmployeeInfoById(String id,
     		Map<String, String> infos) {
@@ -132,6 +156,16 @@ public class CompositeService {
 	    	}
     }
     
+    public SingleApplicationWorkFlowResponse emailApplicationResultById(@PathVariable Integer id,
+            @RequestBody EmailApplicationStatusRequest emailApplicationStatusRequest){
+		return applicationService.emailApplicationResultById(id,emailApplicationStatusRequest);
+		}
+		
+		public SingleEmployeeResponse updateEmployeeVisaStatusById(@RequestParam String id,
+		   @RequestBody VisaStatusUpdateRequest visaStatusUpdateRequest) {
+		return employeeService.updateEmployeeVisaStatusById(id, visaStatusUpdateRequest);
+		}
+    
     public SingleEmployeeResponse addEmployee(Employee employee) {
     	return employeeService.AddEmployee(employee);
     }
@@ -139,16 +173,14 @@ public class CompositeService {
     public EmployeesResponse paginatedEmployees(Integer pageNo, Integer pageSize) {
     	return this.employeeService.GetEmployeeList(pageNo, pageSize);
 
-        //Add files
-        employeeService.UploadNewDocumentToUser(multiFile, id);
     }
 
     public HousingEmployeeResponse getEmployeeHouseDetail(@PathVariable String employeeId) {
-        SingleEmployeeResponse employee = employeeService.GetEmployeeById(employeeId);
+        SingleEmployeeResponse employee = employeeService.getEmployeeById(employeeId);
         Integer houseId = employee.getEmployee().getHouseId();
         SingleHouseResponse house = housingService.getHouseById(houseId);
 
-        EmployeesResponse employeeList = employeeService.GetAllEmployee();
+        EmployeesResponse employeeList = employeeService.getAllEmployee();
         return null;
         }
 
@@ -178,6 +210,7 @@ public class CompositeService {
 }
     public int daysBetween(Date d1, Date d2){
         return (int)( (d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
+        		}
 
     public SingleFacilityReportResponse createFacilityReport(FacilityReportRequest request) {
 
@@ -201,6 +234,19 @@ public class CompositeService {
                         .build())
                 .build();
 
+    }
+    
+    public List<FilePathResponse> getFilePathList(String employeeId){
+    	List<PersonalDocument> originalList = getEmployeeById(employeeId).getEmployee().getPersonalDocument();
+    	TextEncryptor textEnc = Encryptors.text(AES_KEY, AES_SALT);
+    	return originalList.stream().map(d->{ 
+    		return FilePathResponse.builder()
+    			.title(d.getTitle())
+    			.comment(d.getComment())
+    			.path(DOWNLOAD_PREFIX + textEnc.encrypt(d.getPath()))
+    			.build(); 
+    		})
+    			.collect(Collectors.toList());
     }
 
 }

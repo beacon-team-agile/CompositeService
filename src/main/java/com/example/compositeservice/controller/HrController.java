@@ -1,8 +1,11 @@
 package com.example.compositeservice.controller;
 
+import com.example.compositeservice.domain.request.DigitalDocumentUploadRequest;
 import com.example.compositeservice.domain.request.ApplicationService.EmailApplicationStatusRequest;
 import com.example.compositeservice.domain.request.HousingService.FacilityReportDetailRequest;
 import com.example.compositeservice.domain.request.HousingService.FacilityReportRequest;
+import com.example.compositeservice.domain.response.ApplicationResponse.AddDigitalDocumentResponse;
+import com.example.compositeservice.domain.response.ApplicationResponse.MultipleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.response.ApplicationResponse.SingleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.AllEmployeesBriefInfoResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.SingleEmployeeResponse;
@@ -21,6 +24,9 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.client.RestTemplate;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -42,10 +48,16 @@ import java.util.stream.Collectors;
 @PreAuthorize("hasAuthority('hr')")
 public class HrController {
     private CompositeService compositeService;
+    private CompositeFileService compositeFileService;
 
     @Autowired
     public void setCompositeService(CompositeService compositeService) {
         this.compositeService = compositeService;
+    }
+    
+    @Autowired
+    public void setCompositeFileService(CompositeFileService compositeFileService) {
+        this.compositeFileService = compositeFileService;
     }
 
     @GetMapping("/view-all-active-visa")
@@ -62,9 +74,10 @@ public class HrController {
 
     @GetMapping("employee/{id}")
     public SingleEmployeeResponse getEmployeeDetailById(@PathVariable String id) {
-        return compositeService.getEmployeeById(id);
+        return compositeService.getEmployeeById(id);}
     
-    @PostMapping(value = "upload_digital_file", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "upload_digital_file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    		)
     public AddDigitalDocumentResponse uploadDocument(@RequestPart("file") MultipartFile multifile
     		, @RequestPart String title, @RequestPart String description, @RequestPart String is_required) {
     	
