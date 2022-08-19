@@ -97,14 +97,30 @@ public class CompositeService {
                                                                         @RequestBody EmailApplicationStatusRequest emailApplicationStatusRequest){
         return applicationService.emailApplicationResultById(id,emailApplicationStatusRequest);
     }
+
     public SingleEmployeeResponse updateEmployeeVisaStatusById(@RequestParam String id,
                                                                @RequestBody VisaStatusUpdateRequest visaStatusUpdateRequest) {
         return employeeService.updateEmployeeVisaStatusById(id, visaStatusUpdateRequest);
     }
-    public void addEmployeeForm(Employee employee, @RequestPart MultipartFile multiFile) {
+
+    
+    public SingleEmployeeResponse addEmployee(Employee employee) {
+    	return employeeService.AddEmployee(employee);
+    }
+    
+
+
+    public ResponseStatus addEmployeeForms(String employeeId, MultipartFile[] multiFiles) {
         //Add employee
-        Integer id = employeeService.AddEmployee(employee);
-        employeeService.UploadDocumentToUser(multiFile, id.toString(), "test title", "test comment");
+        SingleEmployeeResponse emp = employeeService.getEmployeeById(employeeId);
+        if(!emp.getResponseStatus().is_success()) {
+        	return emp.getResponseStatus();
+        }
+        for(int i = 0;i < multiFiles.length;i++) {
+            ResponseStatus rs = employeeService.UploadDocumentToUser(multiFiles[i], emp.getEmployee().getId(), multiFiles[i].getOriginalFilename(), "Initial Upload");
+            if(!rs.is_success()) return rs;
+        }
+        return ResponseStatus.builder().is_success(true).message("Uploads all succeeded").build();
     }
     
     public List<FilePathResponse> getFilePathList(String employeeId){

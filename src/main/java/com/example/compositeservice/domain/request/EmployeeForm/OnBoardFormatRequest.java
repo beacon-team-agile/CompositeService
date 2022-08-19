@@ -1,4 +1,4 @@
-package com.example.compositeservice.domain.request.EmplyeeForm;
+package com.example.compositeservice.domain.request.EmployeeForm;
 
 import com.example.compositeservice.entity.EmployeeService.*;
 import lombok.Builder;
@@ -11,6 +11,7 @@ import java.util.List;
 @Setter
 @Builder
 public class OnBoardFormatRequest {
+	private Integer userId;
     private String firstName;
     private String lastName;
     private String middleName;

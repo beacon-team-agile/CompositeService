@@ -1,11 +1,9 @@
 package com.example.compositeservice.controller;
 
-import com.example.compositeservice.domain.request.EmployeeService.VisaStatusUpdateRequest;
-import com.example.compositeservice.domain.response.EmployeeResponse.SingleEmployeeResponse;
-import com.example.compositeservice.service.CompositeService;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.example.compositeservice.domain.request.EmplyeeForm.OnBoardFormatRequest;
+import com.example.compositeservice.domain.request.EmployeeForm.OnBoardFormatRequest;
 import com.example.compositeservice.domain.response.EmployeeResponse.FilePathResponse;
+import com.example.compositeservice.domain.response.EmployeeResponse.SingleEmployeeResponse;
+import com.example.compositeservice.domain.response.common.ResponseStatus;
 import com.example.compositeservice.entity.EmployeeService.Employee;
 import com.example.compositeservice.service.CompositeFileService;
 import com.example.compositeservice.service.CompositeService;
@@ -13,18 +11,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/employee")
-@PreAuthorize("hasAuthority('employee')")
-public class EmployeeController {
-
+@PreAuthorize("hasAuthority('nonemployee')")
+public class NonEmployeeController {
 
     private CompositeService compositeService;
     private CompositeFileService compositeFileService;
-
 
     @Autowired
     public void setCompositeService(CompositeService compositeService) {
@@ -44,11 +45,11 @@ public class EmployeeController {
     }
 
     @PostMapping("/onboard")
-    public String submitForm(OnBoardFormatRequest onBoardFormatRequest,
-                                  @RequestPart MultipartFile multiFile) {
+    public ResponseStatus submitOnboardForm(@RequestBody OnBoardFormatRequest onBoardFormatRequest) {
 
         //Add new employee data
         Employee newEmployee = Employee.builder()
+        		.userId(onBoardFormatRequest.getUserId())
                 .firstName(onBoardFormatRequest.getFirstName())
                 .lastName(onBoardFormatRequest.getLastName())
                 .middleName(onBoardFormatRequest.getMiddleName())
@@ -63,38 +64,39 @@ public class EmployeeController {
                 .endDate(onBoardFormatRequest.getEndDate())
                 .driverLicense(onBoardFormatRequest.getDriverLicense())
                 .driverLicenseExpiration(onBoardFormatRequest.getDriverLicenseExpiration())
-                .houseId(Integer.valueOf(onBoardFormatRequest.getHouseId()))
                 .contact(onBoardFormatRequest.getContact())
                 .address(onBoardFormatRequest.getAddress())
                 .visaStatus(onBoardFormatRequest.getVisaStatus())
                 .personalDocument(onBoardFormatRequest.getPersonalDocument())
         .build();
-
-        this.compositeService.addEmployeeForm(newEmployee, multiFile);
-        return "On board page";
-    }
-
-    @GetMapping("/main_menu")
-    public String viewMainPage(HttpServletResponse response) {
-        //Identify by header
-
-        return "Welcome to homepage";
+        SingleEmployeeResponse ser = this.compositeService.addEmployee(newEmployee);
+        if(ser.getResponseStatus().is_success()) {
+        	return ResponseStatus.builder().is_success(true).message(ser.getEmployee().getId()).build();
+        }else {
+        	return ser.getResponseStatus();
+        }
     }
     
-    @GetMapping("download")
+    @PostMapping("/uploads")
+    public ResponseStatus submitOnboardDocuments(@RequestPart String employeeId,
+                                  @RequestPart MultipartFile[] multiFile) {
+        return this.compositeService.addEmployeeForms(employeeId, multiFile);
+    }
+    
+    @GetMapping("/view_onboard_form")
+    public SingleEmployeeResponse view_OnboardForm(@RequestPart String employeeId) {
+    	return this.compositeService.getEmployeeById(employeeId);
+    }
+    
+    @GetMapping("/download")
     public ResponseEntity<ByteArrayResource> retrieveFile(@RequestPart String filename) {
         return compositeFileService.downloadDocument(filename);
     }
     
-    @GetMapping("getAllDocuments/{empId}")
-    public List<FilePathResponse> retrieveAllDocuments(@PathVariable String empId) {
+    @GetMapping("/view_all_documents")
+    public List<FilePathResponse> retrieveAllDocuments(@RequestPart String empId) {
         return compositeService.getFilePathList(empId);
     }
 
-    @PostMapping("/updateVisaStatus")
-    public SingleEmployeeResponse updateEmployeeVisaStatusById(@RequestParam String id,
-                                                               @RequestBody VisaStatusUpdateRequest visaStatusUpdateRequest) {
-        return compositeService.updateEmployeeVisaStatusById(id, visaStatusUpdateRequest);
-    }
 
 }
