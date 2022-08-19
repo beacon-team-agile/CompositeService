@@ -11,4 +11,5 @@ public class EmailApplicationStatusRequest {
 	String email;
 	Boolean approved;
 	String comment;
+	private String token;
 }

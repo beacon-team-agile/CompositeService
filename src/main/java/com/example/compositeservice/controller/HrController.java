@@ -10,6 +10,7 @@ import com.example.compositeservice.domain.response.ApplicationResponse.SingleAp
 import com.example.compositeservice.domain.response.EmployeeResponse.AllEmployeesBriefInfoResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.EmployeeBriefInfoResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.SingleEmployeeResponse;
+import com.example.compositeservice.entity.EmployeeService.Employee;
 import com.example.compositeservice.service.CompositeFileService;
 import com.example.compositeservice.service.CompositeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +25,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/hr")
@@ -112,7 +116,43 @@ public class HrController {
 
     @PostMapping("/applicationWorkFlow/email_result/{id}")
     public SingleApplicationWorkFlowResponse emailApplicationResultById(@PathVariable Integer id,
+                                                                        @RequestParam String employee_id,
                                                                         @RequestBody EmailApplicationStatusRequest emailApplicationStatusRequest){
+        SingleEmployeeResponse employeeResponse = compositeService.getEmployeeById(employee_id);
+
+        Employee employee = employeeResponse.getEmployee();
+
+        int user_id = employee.getUserId();
+        System.out.println(user_id);
+
+        String URI;
+        boolean is_approved = emailApplicationStatusRequest.getApproved();
+        if (is_approved) {
+            //enable user by user id
+            URI = "http://localhost:9000/authentication-service/credential/enableEmployee";
+        }else {
+            //disable user by user id
+            URI = "http://localhost:9000/authentication-service/credential/disableEmployee";
+        }
+
+        String accessToken = emailApplicationStatusRequest.getToken();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + accessToken);
+
+        HttpEntity request = new HttpEntity(headers);
+
+        Map<String,Integer> params = new HashMap<>();
+        params.put("userId",user_id);
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URI)
+                .queryParam("userId",user_id);
+
+
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.exchange(builder.buildAndExpand(params).toUri(),HttpMethod.POST,request,void.class);
+
         return compositeService.emailApplicationResultById(id, emailApplicationStatusRequest);
     }
 
