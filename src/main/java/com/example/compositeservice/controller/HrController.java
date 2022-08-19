@@ -1,27 +1,32 @@
 package com.example.compositeservice.controller;
 
-import com.example.compositeservice.domain.response.EmployeeResponse.EmployeeActiveVisaResponse;
-import com.example.compositeservice.domain.response.common.ResponseStatus;
-import com.example.compositeservice.entity.EmployeeService.Employee;
-import com.example.compositeservice.entity.EmployeeService.VisaStatus;
 import com.example.compositeservice.domain.request.DigitalDocumentUploadRequest;
+import com.example.compositeservice.domain.request.ApplicationService.EmailApplicationStatusRequest;
+import com.example.compositeservice.domain.request.HousingService.FacilityReportDetailRequest;
+import com.example.compositeservice.domain.request.HousingService.FacilityReportRequest;
 import com.example.compositeservice.domain.response.ApplicationResponse.AddDigitalDocumentResponse;
 import com.example.compositeservice.domain.response.ApplicationResponse.MultipleApplicationWorkFlowResponse;
-import com.example.compositeservice.domain.request.ApplicationService.EmailApplicationStatusRequest;
-import com.example.compositeservice.domain.request.AuthenticationService.TokenRequest;
 import com.example.compositeservice.domain.response.ApplicationResponse.SingleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.AllEmployeesBriefInfoResponse;
-import com.example.compositeservice.domain.response.EmployeeResponse.EmployeeBriefInfoResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.SingleEmployeeResponse;
+
 import com.example.compositeservice.entity.EmployeeService.Employee;
 import com.example.compositeservice.service.CompositeFileService;
+
+import com.example.compositeservice.domain.response.HousingResponse.HousingHRResponse;
+import com.example.compositeservice.domain.response.HousingResponse.SingleFacilityReportDetailResponse;
+import com.example.compositeservice.domain.response.HousingResponse.SingleFacilityReportResponse;
+
 import com.example.compositeservice.service.CompositeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import org.springframework.web.client.RestTemplate;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -55,39 +60,24 @@ public class HrController {
         this.compositeFileService = compositeFileService;
     }
 
-   
-    
-    @GetMapping("/view-specific-active-visa/{pageNo}")
-    public List<VisaStatus> viewPagesActiveVisa(@PathVariable Integer pageNo, @RequestParam Integer pageSize) throws ParseException, IOException {
-    	List<Employee> l = compositeService.paginatedEmployees(pageNo, pageSize).getEmployees();
-        return l.stream().map(p->{
-        	for(VisaStatus v : p.getVisaStatus()) {
-        		if(v.getActiveFlag()) { return v; }
-        	}return null;
-        }).collect(Collectors.toList());
-    }
-    
     @GetMapping("/view-all-active-visa")
-    public EmployeeActiveVisaResponse viewAllActiveVisa(HttpServletResponse response) {
-        //Get all active visa
-        return EmployeeActiveVisaResponse.builder()
-                .employeeActiveVisa(compositeService.getAllActiveEmployee()).build();
+    public String viewAllActiveVisa(HttpServletResponse response) throws ParseException, IOException {
+
+        return "Active visas";
     }
 
-    //Hr viewing all employee
     @GetMapping("employee/all_brief_info")
     public AllEmployeesBriefInfoResponse getAllEmployeeBriefInfo() {
         return compositeService.getAllEmployeeBriefInfo();
     }
 
 
-    //Hr viewing employee by id
-    @GetMapping("/employee/{id}")
+    @GetMapping("employee/{id}")
     public SingleEmployeeResponse getEmployeeDetailById(@PathVariable String id) {
-        return compositeService.getEmployeeById(id);
-    }
+        return compositeService.getEmployeeById(id);}
     
-    @PostMapping(value = "upload_digital_file", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "upload_digital_file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    		)
     public AddDigitalDocumentResponse uploadDocument(@RequestPart("file") MultipartFile multifile
     		, @RequestPart String title, @RequestPart String description, @RequestPart String is_required) {
     	
@@ -174,26 +164,15 @@ public class HrController {
         return compositeService.emailApplicationResultById(id, emailApplicationStatusRequest);
     }
 
-    @PostMapping("/credential/generateToken_sendEmail")
-    public ResponseEntity<String> generateToken_sendEmail(@RequestBody TokenRequest tokenRequest){
-        String emailTokenURI = "http://localhost:8088/authentication-service/credential/generate";
 
-        String accessToken = tokenRequest.getToken();
+    @GetMapping("house/view-house-detail/{houseId}")
+    public HousingHRResponse getHRHouseDetail(@PathVariable Integer houseId) {
+        return compositeService.getHRHouseDetail(houseId);
+    }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer " + accessToken);
-
-        RequestEntity<TokenRequest> requestEntity = RequestEntity
-                .post(emailTokenURI, tokenRequest)
-                .headers(headers)
-                .accept(MediaType.APPLICATION_JSON)
-                .body(tokenRequest);
-
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
-
-        return response;
+    @PostMapping("house/report-house-detail/comment")
+    public SingleFacilityReportDetailResponse createFacilityReportDetail(@RequestBody FacilityReportDetailRequest request) {
+        return compositeService.createFacilityReportDetail(request);
     }
 
     @GetMapping("/applicationWorkFlow/all_inactive_application")

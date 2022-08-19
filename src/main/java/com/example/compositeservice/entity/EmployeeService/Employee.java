@@ -4,9 +4,6 @@ import lombok.*;
 
 import java.util.List;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-
 @Getter
 @Setter
 @AllArgsConstructor
