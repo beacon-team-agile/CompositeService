@@ -4,6 +4,8 @@ import com.example.compositeservice.domain.request.EmployeeService.VisaStatusUpd
 import com.example.compositeservice.domain.request.HousingService.FacilityReportDetailRequest;
 import com.example.compositeservice.domain.request.HousingService.FacilityReportRequest;
 import com.example.compositeservice.domain.response.EmployeeResponse.SingleEmployeeResponse;
+import com.example.compositeservice.domain.response.HousingService.AllFacilityReportDetailsResponse;
+import com.example.compositeservice.domain.response.HousingService.AllFacilityReportsResponse;
 import com.example.compositeservice.domain.response.HousingService.SingleFacilityReportDetailResponse;
 import com.example.compositeservice.domain.response.HousingService.SingleFacilityReportResponse;
 import com.example.compositeservice.domain.response.HousingService.SingleHouseResponse;
@@ -16,7 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/employee")
@@ -62,6 +66,21 @@ public class EmployeeController {
     @PostMapping("house/report-house-detail/comment")
     public SingleFacilityReportDetailResponse createFacilityReportDetail(@RequestBody FacilityReportDetailRequest request) {
         return compositeService.createFacilityReportDetail(request);
+    }
+
+    @GetMapping("house/get-house-facility-ids/{houseId}")
+    public List<Integer> AllFacilityIdsByHouse(@PathVariable Integer houseId){
+    	return compositeService.AllFacilityIdsByHouse(houseId);
+    }
+
+    @GetMapping("house/get-facility-reports/{facilityId}")
+    public AllFacilityReportsResponse FacilityReportsByFacilityId(@PathVariable Integer facilityId) {
+    	return compositeService.FacilityReportsByFacilityId(facilityId);
+    }
+
+    @GetMapping("house/get-report-comments/{facilityReportId}")
+    public AllFacilityReportDetailsResponse getFacilityReportDetailsByFacilityReportId(@PathVariable Integer facilityReportId) {
+    	return compositeService.getFacilityReportDetailsByFacilityReportId(facilityReportId);
     }
 
 }
