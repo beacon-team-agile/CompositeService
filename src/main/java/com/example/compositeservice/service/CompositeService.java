@@ -12,7 +12,6 @@ import com.example.compositeservice.domain.response.HousingResponse.*;
 import com.example.compositeservice.domain.response.common.ResponseStatus;
 import com.example.compositeservice.entity.EmployeeService.Employee;
 import com.example.compositeservice.entity.HousingService.*;
-import com.example.compositeservice.service.remote.RemoteApplicationService;
 import com.example.compositeservice.service.remote.RemoteEmployeeService;
 import com.example.compositeservice.service.remote.RemoteHousingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,6 @@ import java.util.List;
 @Service
 public class CompositeService {
     private RemoteEmployeeService employeeService;
-    private RemoteApplicationService applicationService;
     private RemoteHousingService housingService;
     private RestTemplate restTemplate;
 
@@ -43,11 +41,6 @@ public class CompositeService {
     @Autowired
     public void setEmployeeService(RemoteEmployeeService employeeService) {
         this.employeeService = employeeService;
-    }
-
-    @Autowired
-    public void setApplicationService(RemoteApplicationService applicationService) {
-        this.applicationService = applicationService;
     }
 
     @Autowired
@@ -96,10 +89,6 @@ public class CompositeService {
         return employeeService.GetEmployeeById(id);
     }
 
-    public SingleApplicationWorkFlowResponse emailApplicationResultById(@PathVariable Integer id,
-                                                                        @RequestBody EmailApplicationStatusRequest emailApplicationStatusRequest){
-        return applicationService.emailApplicationResultById(id,emailApplicationStatusRequest);
-    }
 
     public void addEmployeeForm(Employee employee, @RequestPart MultipartFile multiFile) {
         //Add employee
@@ -139,6 +128,7 @@ public class CompositeService {
     public SingleFacilityReportResponse createFacilityReport(@RequestBody FacilityReportRequest request) {
 
         housingService.addFacilityReport(request);
+        System.out.println(2);
         return SingleFacilityReportResponse.builder()
                 .responseStatus(ResponseStatus.builder()
                         .is_success(true)
@@ -174,7 +164,4 @@ public class CompositeService {
 
     }
 
-    public Facility getFacilityInfoByFacilityId(@RequestParam Facility facility) {
-
-    }
 }

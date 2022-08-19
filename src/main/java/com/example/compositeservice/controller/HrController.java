@@ -46,11 +46,7 @@ public class HrController {
         return compositeService.getEmployeeById(id);
     }
 
-    @PostMapping("/applicationWorkFlow/email_result/{id}")
-    public SingleApplicationWorkFlowResponse emailApplicationResultById(@PathVariable Integer id,
-                                                                        @RequestBody EmailApplicationStatusRequest emailApplicationStatusRequest){
-        return compositeService.emailApplicationResultById(id, emailApplicationStatusRequest);
-    }
+
 
     @GetMapping("house/view-house-detail/{houseId}")
     public HousingHRResponse getHRHouseDetail(@PathVariable Integer houseId) {
