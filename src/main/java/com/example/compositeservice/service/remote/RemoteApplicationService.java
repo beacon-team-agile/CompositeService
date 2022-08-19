@@ -37,5 +37,8 @@ public interface RemoteApplicationService {
     SingleApplicationWorkFlowResponse emailApplicationResultById(@PathVariable Integer id,
                                                       @RequestBody EmailApplicationStatusRequest emailApplicationStatusRequest);
 
+    @GetMapping("application-service/applicationWorkFlow/all_inactive_application")
+    MultipleApplicationWorkFlowResponse getAllInactiveApplicationWorkFlow();
+
 
 }

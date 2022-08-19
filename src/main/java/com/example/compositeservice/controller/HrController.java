@@ -155,4 +155,10 @@ public class HrController {
 
         return response;
     }
+
+    @GetMapping("/applicationWorkFlow/all_inactive_application")
+    public MultipleApplicationWorkFlowResponse getAllInactiveApplicationWorkFlow() {
+        return compositeService.getAllInactiveApplicationWorkFlow();
+
+    }
 }
