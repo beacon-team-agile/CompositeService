@@ -121,6 +121,7 @@ public class HrController {
         String emailTokenURI = "http://localhost:8088/authentication-service/credential/generate";
 
         String accessToken = tokenRequest.getToken();
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Bearer " + accessToken);

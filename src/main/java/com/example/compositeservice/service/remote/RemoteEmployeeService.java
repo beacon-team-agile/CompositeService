@@ -1,5 +1,6 @@
 package com.example.compositeservice.service.remote;
 
+import com.example.compositeservice.domain.request.EmployeeService.VisaStatusUpdateRequest;
 import com.example.compositeservice.config.FeignEncoderConfig;
 import com.example.compositeservice.domain.response.EmployeeResponse.EmployeesResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.SingleEmployeeResponse;
@@ -8,6 +9,7 @@ import com.example.compositeservice.domain.response.common.ResponseStatus;
 import feign.Headers;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +27,10 @@ public interface RemoteEmployeeService {
 
     @GetMapping("employee-service/employee/all")
     EmployeesResponse getAllEmployee();
+
+    @PostMapping("employee-service/employee/updateVisaStatus")
+    SingleEmployeeResponse updateEmployeeVisaStatusById(@RequestParam String id,
+                                                        @RequestBody VisaStatusUpdateRequest visaStatusUpdateRequest);
 
     @PostMapping("employee-service/employee/add")
     SingleEmployeeResponse AddEmployee(Employee employee);
