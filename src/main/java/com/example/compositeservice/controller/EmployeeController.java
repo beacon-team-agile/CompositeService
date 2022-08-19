@@ -97,9 +97,9 @@ public class EmployeeController {
         return "Welcome to homepage";
     }
     
-    @GetMapping("/download")
-    public ResponseEntity<ByteArrayResource> retrieveFile(@RequestPart String filename) {
-        return compositeFileService.downloadDocument(filename);
+    @GetMapping("/download/{filename}")
+    public ResponseEntity<ByteArrayResource> retrieveFile(@PathVariable String filename) {
+        return compositeFileService.downloadDocumentEncryptedKey(filename);
     }
     
     @GetMapping("/view_all_documents")

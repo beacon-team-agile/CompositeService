@@ -13,7 +13,12 @@ import com.example.compositeservice.entity.EmployeeService.Employee;
 import com.example.compositeservice.entity.EmployeeService.PersonalDocument;
 import com.example.compositeservice.service.remote.RemoteApplicationService;
 import com.example.compositeservice.service.remote.RemoteEmployeeService;
+
+import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.encrypt.AesBytesEncryptor;
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,12 +26,16 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class CompositeService {
+	
+	private final String AES_KEY = "securedEndpoint123";
+	private final String AES_SALT = "414243444546";
 	
 	private final String DOWNLOAD_PREFIX = "localhost:9000/composite-service/employee/download/";
     private RemoteEmployeeService employeeService;
@@ -117,13 +126,13 @@ public class CompositeService {
     
     public List<FilePathResponse> getFilePathList(String employeeId){
     	List<PersonalDocument> originalList = getEmployeeById(employeeId).getEmployee().getPersonalDocument();
+    	TextEncryptor textEnc = Encryptors.text(AES_KEY, AES_SALT);
     	return originalList.stream().map(d->{ return FilePathResponse.builder()
     			.title(d.getTitle())
     			.comment(d.getComment())
-    			.path(DOWNLOAD_PREFIX + d.getPath())
+    			.path(DOWNLOAD_PREFIX + textEnc.encrypt(d.getPath()))
     			.build(); })
     			.collect(Collectors.toList());
-    	
     }
 
 
