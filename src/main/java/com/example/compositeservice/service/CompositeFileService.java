@@ -1,12 +1,19 @@
 package com.example.compositeservice.service;
 
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.encrypt.AesBytesEncryptor;
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
+import org.springframework.security.rsa.crypto.RsaSecretEncryptor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,11 +22,15 @@ import com.example.compositeservice.domain.request.PersonalDocumentUploadRequest
 import com.example.compositeservice.domain.response.ApplicationResponse.AddDigitalDocumentResponse;
 import com.example.compositeservice.domain.response.common.ResponseStatus;
 import com.example.compositeservice.entity.ApplicationService.DigitalDocument;
+import com.example.compositeservice.entity.EmployeeService.PersonalDocument;
 import com.example.compositeservice.service.remote.RemoteApplicationService;
 import com.example.compositeservice.service.remote.RemoteEmployeeService;
 
 @Service
 public class CompositeFileService {
+	
+	private final String AES_KEY = "securedEndpoint123";
+	private final String AES_SALT = "414243444546";
     private RemoteEmployeeService employeeService;
     private RemoteApplicationService applicationService;
 
@@ -75,7 +86,11 @@ public class CompositeFileService {
     	return employeeService.downloadFile(docKey);
     }
     
-    
+    public ResponseEntity<ByteArrayResource> downloadDocumentEncryptedKey(String docKey) {
+    	TextEncryptor textEnc = Encryptors.text(AES_KEY, AES_SALT);
+    	String actualKey = textEnc.decrypt(docKey);
+    	return employeeService.downloadFile(actualKey);
+    }
     
     
 }

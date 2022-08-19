@@ -106,7 +106,7 @@ public class HrController {
     
     @GetMapping("download/{filename}")
     public ResponseEntity<ByteArrayResource> retrieveFile(@PathVariable String filename) {
-        return compositeFileService.downloadDocument(filename);
+        return compositeFileService.downloadDocumentEncryptedKey(filename);
     }
    
 
@@ -121,6 +121,7 @@ public class HrController {
         String emailTokenURI = "http://localhost:8088/authentication-service/credential/generate";
 
         String accessToken = tokenRequest.getToken();
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Bearer " + accessToken);
