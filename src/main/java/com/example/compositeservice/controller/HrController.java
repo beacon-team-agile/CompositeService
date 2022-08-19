@@ -1,5 +1,6 @@
 package com.example.compositeservice.controller;
 
+import com.example.compositeservice.domain.response.EmployeeResponse.EmployeeActiveVisaResponse;
 import com.example.compositeservice.domain.response.common.ResponseStatus;
 import com.example.compositeservice.entity.EmployeeService.Employee;
 import com.example.compositeservice.entity.EmployeeService.VisaStatus;
@@ -50,8 +51,7 @@ public class HrController {
         this.compositeFileService = compositeFileService;
     }
 
-    
-
+   
     
     @GetMapping("/view-specific-active-visa/{pageNo}")
     public List<VisaStatus> viewPagesActiveVisa(@PathVariable Integer pageNo, @RequestParam Integer pageSize) throws ParseException, IOException {
@@ -61,6 +61,13 @@ public class HrController {
         		if(v.getActiveFlag()) { return v; }
         	}return null;
         }).collect(Collectors.toList());
+    }
+    
+    @GetMapping("/view-all-active-visa")
+    public EmployeeActiveVisaResponse viewAllActiveVisa(HttpServletResponse response) throws ParseException, IOException {
+        //Get all active visa
+        return EmployeeActiveVisaResponse.builder()
+                .employeeActiveVisa(compositeService.getAllActiveEmployee()).build();
     }
 
     //Hr viewing all employee
