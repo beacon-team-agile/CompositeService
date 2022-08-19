@@ -11,6 +11,7 @@ import com.example.compositeservice.entity.EmployeeService.PersonalDocument;
 import com.example.compositeservice.entity.EmployeeService.VisaStatus;
 import com.example.compositeservice.service.remote.RemoteApplicationService;
 import com.example.compositeservice.service.remote.RemoteEmployeeService;
+import com.example.compositeservice.service.remote.RemoteHousingService;
 
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,6 +43,7 @@ public class CompositeService {
 	private final String DOWNLOAD_PREFIX = "localhost:9000/composite-service/employee/download/";
     private RemoteEmployeeService employeeService;
     private RemoteApplicationService applicationService;
+    private RemoteHousingService housingService;
 
     private RestTemplate restTemplate;
 
@@ -57,6 +60,11 @@ public class CompositeService {
     @Autowired
     public void setApplicationService(RemoteApplicationService applicationService) {
         this.applicationService = applicationService;
+    }
+    
+    @Autowired
+    public void setHousingService(RemoteHousingService housingService) {
+        this.housingService = housingService;
     }
 
     public AllEmployeesBriefInfoResponse getAllEmployeeBriefInfo() {
@@ -98,6 +106,32 @@ public class CompositeService {
 
     public SingleEmployeeResponse getEmployeeById(String id){
         return employeeService.getEmployeeById(id);
+    }
+    
+    public SingleEmployeeResponse updateEmployeeInfoById(String id,
+    		Map<String, String> infos) {
+	    	SingleEmployeeResponse ser = getEmployeeById(id);
+	    	if(ser.getResponseStatus().is_success()) {
+	    		Employee e = ser.getEmployee();
+	    		e.setFirstName(infos.getOrDefault("firstName", e.getFirstName()));
+	    		e.setLastName(infos.getOrDefault("lastNwame", e.getLastName()));
+	    		e.setMiddleName(infos.getOrDefault("middleName", e.getMiddleName()));
+	    		e.setPreferredName(infos.getOrDefault("preferredName", e.getPreferredName()));
+	    		e.setCellPhone(infos.getOrDefault("cellPhone", e.getCellPhone()));
+	    		e.setAlternatePhone(infos.getOrDefault("alternatePhone", e.getAlternatePhone()));
+	    		e.setGender(infos.getOrDefault("gender", e.getGender()));
+	    		e.setEmail(infos.getOrDefault("email", e.getEmail()));
+	    		e.setSsn(infos.getOrDefault("ssn", e.getSsn()));
+	    		e.setDob(infos.getOrDefault("dob", e.getDob()));
+	    		e.setDriverLicense(infos.getOrDefault("driverLicense", e.getDriverLicense()));
+	    		e.setDriverLicenseExpiration(infos.getOrDefault("driverLicenseExpiration", e.getDriverLicenseExpiration()));
+	    		e.setStartDate(infos.getOrDefault("startDate", e.getStartDate()));
+	    		e.setEndDate(infos.getOrDefault("endDate", e.getEndDate()));
+	    		return employeeService.updateEmployeeById(id, e);
+	    		}
+	    	else {
+	    		return SingleEmployeeResponse.builder().responseStatus(ResponseStatus.builder().is_success(false).build()).build();
+	    	}
     }
 
     public SingleApplicationWorkFlowResponse emailApplicationResultById(@PathVariable Integer id,

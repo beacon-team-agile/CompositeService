@@ -25,6 +25,7 @@ import com.example.compositeservice.entity.ApplicationService.DigitalDocument;
 import com.example.compositeservice.entity.EmployeeService.PersonalDocument;
 import com.example.compositeservice.service.remote.RemoteApplicationService;
 import com.example.compositeservice.service.remote.RemoteEmployeeService;
+import com.example.compositeservice.service.remote.RemoteHousingService;
 
 @Service
 public class CompositeFileService {
@@ -33,6 +34,7 @@ public class CompositeFileService {
 	private final String AES_SALT = "414243444546";
     private RemoteEmployeeService employeeService;
     private RemoteApplicationService applicationService;
+    private RemoteHousingService housingService;
 
     private RestTemplate restTemplate;
 
@@ -49,6 +51,11 @@ public class CompositeFileService {
     @Autowired
     public void setApplicationService(RemoteApplicationService applicationService) {
         this.applicationService = applicationService;
+    }
+    
+    @Autowired
+    public void setHousingService(RemoteHousingService housingService) {
+        this.housingService = housingService;
     }
     
     public ResponseStatus uploadPersonalDocumentToUser(PersonalDocumentUploadRequest pdur) {
