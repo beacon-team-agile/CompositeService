@@ -8,10 +8,15 @@ import com.example.compositeservice.service.CompositeFileService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.text.ParseException;
+
 @RestController
 @RequestMapping("/employee")
 @PreAuthorize("hasAuthority('employee')")
 public class EmployeeController {
+
     private CompositeService compositeService;
 
 
@@ -23,7 +28,7 @@ public class EmployeeController {
     @PostMapping("/updateVisaStatus")
     public SingleEmployeeResponse updateEmployeeVisaStatusById(@RequestParam String id,
                                                                @RequestBody VisaStatusUpdateRequest visaStatusUpdateRequest) {
-        return compositeService.updateEmployeeVisaStatusById(id, visaStatusUpdateRequest);
-    }
+        return compositeService.updateEmployeeVisaStatusById(id, visaStatusUpdateRequest);}
+
 
 }

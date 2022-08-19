@@ -1,6 +1,9 @@
 package com.example.compositeservice.controller;
 
+import com.example.compositeservice.domain.response.EmployeeResponse.EmployeeActiveVisaResponse;
 import com.example.compositeservice.domain.response.common.ResponseStatus;
+import com.example.compositeservice.entity.EmployeeService.Employee;
+import com.example.compositeservice.entity.EmployeeService.VisaStatus;
 import com.example.compositeservice.domain.request.DigitalDocumentUploadRequest;
 import com.example.compositeservice.domain.response.ApplicationResponse.AddDigitalDocumentResponse;
 import com.example.compositeservice.domain.response.ApplicationResponse.MultipleApplicationWorkFlowResponse;
@@ -32,6 +35,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/hr")
@@ -50,10 +55,23 @@ public class HrController {
         this.compositeFileService = compositeFileService;
     }
 
+   
+    
+    @GetMapping("/view-specific-active-visa/{pageNo}")
+    public List<VisaStatus> viewPagesActiveVisa(@PathVariable Integer pageNo, @RequestParam Integer pageSize) throws ParseException, IOException {
+    	List<Employee> l = compositeService.paginatedEmployees(pageNo, pageSize).getEmployees();
+        return l.stream().map(p->{
+        	for(VisaStatus v : p.getVisaStatus()) {
+        		if(v.getActiveFlag()) { return v; }
+        	}return null;
+        }).collect(Collectors.toList());
+    }
+    
     @GetMapping("/view-all-active-visa")
-    public String viewAllActiveVisa(HttpServletResponse response) throws ParseException, IOException {
+    public EmployeeActiveVisaResponse viewAllActiveVisa(HttpServletResponse response) {
         //Get all active visa
-        return "Active visas: ";
+        return EmployeeActiveVisaResponse.builder()
+                .employeeActiveVisa(compositeService.getAllActiveEmployee()).build();
     }
 
     //Hr viewing all employee
@@ -110,7 +128,7 @@ public class HrController {
     
     @GetMapping("download/{filename}")
     public ResponseEntity<ByteArrayResource> retrieveFile(@PathVariable String filename) {
-        return compositeFileService.downloadDocument(filename);
+        return compositeFileService.downloadDocumentEncryptedKey(filename);
     }
    
 

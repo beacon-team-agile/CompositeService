@@ -88,10 +88,10 @@ public class NonEmployeeController {
     	return this.compositeService.getEmployeeById(employeeId);
     }
     
-    @GetMapping("/download")
-    public ResponseEntity<ByteArrayResource> retrieveFile(@RequestPart String filename) {
-        return compositeFileService.downloadDocument(filename);
-    }
+    @GetMapping("/download/{filename}")
+    public ResponseEntity<ByteArrayResource> retrieveFile(@PathVariable String filename) {
+        return compositeFileService.downloadDocumentEncryptedKey(filename);
+        		}
     
     @GetMapping("/view_all_documents")
     public List<FilePathResponse> retrieveAllDocuments(@RequestPart String empId) {
