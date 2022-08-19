@@ -20,6 +20,7 @@ public interface RemoteHousingService {
 
     @PostMapping("housing-service/housing/{landlordId}")
     SingleHouseResponse addHouse(@RequestBody House requestHouse);
+    
     @GetMapping("housing-service/housing/{houseId}")
     SingleHouseResponse getHouseById(@PathVariable Integer houseId);
 
