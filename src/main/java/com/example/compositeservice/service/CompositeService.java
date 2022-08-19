@@ -7,8 +7,11 @@ import com.example.compositeservice.domain.request.HousingService.FacilityReport
 import com.example.compositeservice.domain.request.HousingService.FacilityReportRequest;
 import com.example.compositeservice.domain.response.ApplicationResponse.SingleApplicationWorkFlowResponse;
 import com.example.compositeservice.domain.response.EmployeeResponse.*;
+import com.example.compositeservice.domain.response.HousingService.AllFacilityReportDetailsResponse;
+import com.example.compositeservice.domain.response.HousingService.AllFacilityReportsResponse;
 import com.example.compositeservice.domain.response.HousingService.SingleFacilityReportDetailResponse;
 import com.example.compositeservice.domain.response.HousingService.SingleFacilityReportResponse;
+import com.example.compositeservice.domain.response.HousingService.SingleHouseResponse;
 import com.example.compositeservice.domain.response.common.ResponseStatus;
 import com.example.compositeservice.entity.EmployeeService.Employee;
 import com.example.compositeservice.entity.EmployeeService.PersonalDocument;
@@ -112,6 +115,9 @@ public class CompositeService {
 
     public SingleEmployeeResponse getEmployeeById(String id){
         return employeeService.getEmployeeById(id);
+    }
+    public SingleEmployeeResponse updateEmployeeById(String id, Employee e) {
+    	return employeeService.updateEmployeeById(id, e);
     }
     
     public SingleEmployeeResponse updateEmployeeInfoById(String id,
@@ -243,5 +249,25 @@ public class CompositeService {
 
     }
     
+    public SingleHouseResponse getHouseById(Integer houseId) {
+    	return housingService.getHouseById(houseId);
+    }
+    
+    public SingleHouseResponse getHouseByEmployeeId(String employeeId) {
+    	Integer hid = getEmployeeById(employeeId).getEmployee().getHouseId();
+    	return housingService.getHouseById(hid);
+    }
+    
+    public List<Integer> AllFacilityIdsByHouse(Integer houseId){
+    	return housingService.getHouseById(houseId).getHouse().getFacilityList().stream().map(e->e.getId()).collect(Collectors.toList());
+    }
+    
+    public AllFacilityReportsResponse FacilityReportsByFacilityId(Integer facilityId) {
+    	return housingService.getFacilityReportsByFacilityId(facilityId);
+    }
+    
+    public AllFacilityReportDetailsResponse getFacilityReportDetailsByFacilityReportId(Integer facilityReportId) {
+    	return housingService.getFacilityReportDetailsByFacilityReportId(facilityReportId);
+    }
     
 }
