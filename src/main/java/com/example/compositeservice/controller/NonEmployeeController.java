@@ -37,6 +37,12 @@ public class NonEmployeeController {
         this.compositeFileService = compositeFileService;
     }
 
+    @GetMapping("/onboard")
+    public String viewOnBoardPage(HttpServletResponse response)
+            throws ParseException, IOException {
+
+        return "On board page";
+    }
 
     @PostMapping("/onboard")
     public ResponseStatus submitOnboardForm(@RequestBody OnBoardFormatRequest onBoardFormatRequest) {
