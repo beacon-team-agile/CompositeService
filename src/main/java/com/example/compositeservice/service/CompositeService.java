@@ -120,7 +120,7 @@ public class CompositeService {
 	    	if(ser.getResponseStatus().is_success()) {
 	    		Employee e = ser.getEmployee();
 	    		e.setFirstName(infos.getOrDefault("firstName", e.getFirstName()));
-	    		e.setLastName(infos.getOrDefault("lastName", e.getLastName()));
+	    		e.setLastName(infos.getOrDefault("lastNwame", e.getLastName()));
 	    		e.setMiddleName(infos.getOrDefault("middleName", e.getMiddleName()));
 	    		e.setPreferredName(infos.getOrDefault("preferredName", e.getPreferredName()));
 	    		e.setCellPhone(infos.getOrDefault("cellPhone", e.getCellPhone()));
