@@ -4,17 +4,19 @@ import com.example.compositeservice.domain.response.ApplicationResponse.Multiple
 import com.example.compositeservice.domain.request.ApplicationService.EmailApplicationStatusRequest;
 import com.example.compositeservice.domain.request.EmployeeService.VisaStatusUpdateRequest;
 import com.example.compositeservice.domain.response.ApplicationResponse.SingleApplicationWorkFlowResponse;
-import com.example.compositeservice.domain.response.EmployeeResponse.AllEmployeesBriefInfoResponse;
-import com.example.compositeservice.domain.response.EmployeeResponse.EmployeeBriefInfoResponse;
-import com.example.compositeservice.domain.response.EmployeeResponse.EmployeesResponse;
-import com.example.compositeservice.domain.response.EmployeeResponse.FilePathResponse;
-import com.example.compositeservice.domain.response.EmployeeResponse.SingleEmployeeResponse;
+import com.example.compositeservice.domain.response.EmployeeResponse.*;
 import com.example.compositeservice.domain.response.common.ResponseStatus;
 import com.example.compositeservice.entity.EmployeeService.Employee;
 import com.example.compositeservice.entity.EmployeeService.PersonalDocument;
+import com.example.compositeservice.entity.EmployeeService.VisaStatus;
 import com.example.compositeservice.service.remote.RemoteApplicationService;
 import com.example.compositeservice.service.remote.RemoteEmployeeService;
+
+import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.encrypt.AesBytesEncryptor;
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,12 +25,18 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class CompositeService {
+	
+	private final String AES_KEY = "securedEndpoint123";
+	private final String AES_SALT = "414243444546";
 	
 	private final String DOWNLOAD_PREFIX = "localhost:9000/composite-service/employee/download/";
     private RemoteEmployeeService employeeService;
@@ -50,7 +58,6 @@ public class CompositeService {
     public void setApplicationService(RemoteApplicationService applicationService) {
         this.applicationService = applicationService;
     }
-
 
     public AllEmployeesBriefInfoResponse getAllEmployeeBriefInfo() {
         EmployeesResponse employeeList = employeeService.getAllEmployee();
@@ -107,6 +114,10 @@ public class CompositeService {
     public SingleEmployeeResponse addEmployee(Employee employee) {
     	return employeeService.AddEmployee(employee);
     }
+    
+    public EmployeesResponse paginatedEmployees(Integer pageNo, Integer pageSize) {
+    	return this.employeeService.GetEmployeeList(pageNo, pageSize);
+    }
 
     public ResponseStatus addEmployeeForms(String employeeId, MultipartFile[] multiFiles) {
         //Add employee
@@ -123,18 +134,60 @@ public class CompositeService {
     
     public List<FilePathResponse> getFilePathList(String employeeId){
     	List<PersonalDocument> originalList = getEmployeeById(employeeId).getEmployee().getPersonalDocument();
+    	TextEncryptor textEnc = Encryptors.text(AES_KEY, AES_SALT);
     	return originalList.stream().map(d->{ return FilePathResponse.builder()
     			.title(d.getTitle())
     			.comment(d.getComment())
-    			.path(DOWNLOAD_PREFIX + d.getPath())
+    			.path(DOWNLOAD_PREFIX + textEnc.encrypt(d.getPath()))
     			.build(); })
     			.collect(Collectors.toList());
-    	
     }
+
 
     public MultipleApplicationWorkFlowResponse getAllInactiveApplicationWorkFlow(){
         return applicationService.getAllInactiveApplicationWorkFlow();
 
+}
+    public int daysBetween(Date d1, Date d2){
+        return (int)( (d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
+
     }
 
+    public List<EmployeeActiveVisa> getAllActiveEmployee() {
+        List<Employee> employeeList = employeeService.getAllEmployee().getEmployees();
+        List<EmployeeActiveVisa> filteredEmployee = new ArrayList<>();
+
+        for (Employee employee: employeeList) {
+            List<VisaStatus> visaStatusList = employee.getVisaStatus();
+            String fullName = employee.getFirstName() + employee.getLastName();
+            List<VisaStatusInfo> visaStatusInfoList = new ArrayList<>();
+            for (VisaStatus visaStatus : visaStatusList) {
+                if (visaStatus.getActiveFlag()) {
+                    String remainingDays = "";
+                    try {
+                        Date endDate =new SimpleDateFormat("MM/dd/yyyy").parse(visaStatus.getEndDate());
+                        Date startDate =new SimpleDateFormat("MM/dd/yyyy").parse(visaStatus.getStartDate());
+                        remainingDays = "" + daysBetween(startDate, endDate);
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+                    VisaStatusInfo visaStatusInfo =
+                            VisaStatusInfo.builder()
+                            .visaType(visaStatus.getVisaType())
+                            .expirationDate(visaStatus.getEndDate())
+                            .dayLeft(remainingDays).build();
+
+                    visaStatusInfoList.add(visaStatusInfo);
+                }
+            }
+
+            if (visaStatusInfoList.size() != 0) {
+                filteredEmployee.add(EmployeeActiveVisa.builder()
+                        .employeeFullName(fullName)
+                        .workAuthorizationType(visaStatusInfoList)
+                        .build());
+            }
+        }
+        return filteredEmployee;
+    }
 }
