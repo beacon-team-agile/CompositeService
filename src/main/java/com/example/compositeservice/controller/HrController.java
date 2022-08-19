@@ -1,5 +1,6 @@
 package com.example.compositeservice.controller;
 
+import com.example.compositeservice.domain.response.EmployeeResponse.EmployeeActiveVisaResponse;
 import com.example.compositeservice.domain.response.common.ResponseStatus;
 import com.example.compositeservice.domain.request.DigitalDocumentUploadRequest;
 import com.example.compositeservice.domain.response.ApplicationResponse.AddDigitalDocumentResponse;
@@ -47,9 +48,10 @@ public class HrController {
     }
 
     @GetMapping("/view-all-active-visa")
-    public String viewAllActiveVisa(HttpServletResponse response) throws ParseException, IOException {
+    public EmployeeActiveVisaResponse viewAllActiveVisa(HttpServletResponse response) throws ParseException, IOException {
         //Get all active visa
-        return "Active visas: ";
+        return EmployeeActiveVisaResponse.builder()
+                .employeeActiveVisa(compositeService.getAllActiveEmployee()).build();
     }
 
     //Hr viewing all employee
